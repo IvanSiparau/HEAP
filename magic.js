@@ -1,3 +1,3 @@
 let root = null;
-let width;
+let width = 1000;
 let  heigth;
