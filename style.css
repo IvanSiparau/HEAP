@@ -1,0 +1,21 @@
+body {
+    font: 100% Arial;
+    margin: 0;
+    padding: 0;
+}
+
+#title {
+    padding: 0 10px 0 20px;
+    background: #960000;
+}
+
+#title h1 {
+    margin: 0;
+    padding: 10px 0;
+    color: #ffffff;
+}
+
+canvas {
+    padding: 0 10px 0 20px;
+    height: 500px;
+}
