@@ -53,3 +53,4 @@ let roots = buildCartesianTree([[1, 5],  [2,4], [3, 6], [4, 8], [5, 5], [6, 2]])
 console.log("key: " + String(roots.key) + " priority: " + String(roots.priority));
 
 console.log(roots);
+// Мне нужно реализовать функцию update, и вести координаты x, y. Написать функцию для построения самого дерево, пуускай без  каких,то анимаций,  но сделать ее, черт побери, хотя это изи чел.
