@@ -7,10 +7,13 @@ class Node {
     this.parent = null;
   }
 }
-
+//сейчас нужно реализовать такую характеристику, как heigth.
 function insertNode(lastNode, node) {
   if (lastNode == null) {  //здесь рассматриваем самую первую вешину
     node.loc = "root";
+    node.left = null;
+    node.right = null;
+    node.height = 1;
     return node;
   }
   while((lastNode.parent != null) && (node.priority <= lastNode.priority)) {
@@ -22,6 +25,7 @@ function insertNode(lastNode, node) {
     node.left = lastNode;
     node.left.parent = node;
     node.left.loc = "left";
+    node.height = getHeigth(lastNode) + 1;
     return node;
   } else  {
     if (lastNode.right != null) {
@@ -33,8 +37,8 @@ function insertNode(lastNode, node) {
     node.loc = "right";
     if (node.left != null) {
       node.left.loc = "left";
-      
     }
+    updateHeigth(node);
     return node;
   }
 }
@@ -50,23 +54,14 @@ function buildCartesianTree(nodes) {
     root = insertNode(root, node);
     lastNode = node;
   }
-  let currentNode = root;
-  while(currentNode.parent != null) {
-    currentNode = currentNode.parent;
-  }
   return root;
 }
 
-// Мне нужно реализовать функцию update, и вести координаты x, y. Написать функцию для построения самого дерево, пуускай без  каких,то анимаций,  но сделать ее, черт побери, хотя это изи чел.
-function getHeigth(node) {
-  if (node == null) {
-    return 0;
-  } else {
-    return node.heigth; 
-  }
-}
 function updateHeigth(node) {
-  
+  if (node != null) {
+    node.height = Math.max(getHeigth(node.left), getHeigth(node.right)) + 1;
+    updateHeigth(node.parent);
+  }
 }
 
 function updateCoordinateX(node) {
@@ -85,6 +80,25 @@ function updateCoordinateY(node) {
   } 
 }
 
-let roots = buildCartesianTree([[1, 5], [2, 4], [3, 6], [4, 8], [5, 5], [6, 2]]);
+function getRoot(node) {
+  while (node.loc != 'root') {
+    node = node.parent;
+  }
+  return parent;
+}
+
+function getHeigth(node) {
+  if (node == null) {
+    return 0;
+  } else {
+    return node.height;
+  }
+}
+
+
+let roots = buildCartesianTree([[1, 5],  [2,4], [3, 6], [4, 8]]);
+while(roots.loc != "root") {
+  roots = roots.parent;
+}
 updateCoordinateY(roots);
 console.log(roots);
