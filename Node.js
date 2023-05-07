@@ -7,9 +7,9 @@ class Node {
     this.parent = null;
   }
 }
-//сейчас нужно реализовать такую характеристику, как heigth.
+
 function insertNode(lastNode, node) {
-  if (lastNode == null) {  //здесь рассматриваем самую первую вешину
+  if (lastNode == null) {
     node.loc = "root";
     node.left = null;
     node.right = null;
@@ -19,7 +19,7 @@ function insertNode(lastNode, node) {
   while((lastNode.parent != null) && (node.priority <= lastNode.priority)) {
     lastNode = lastNode.parent;
   }
-  if ((lastNode.parent == null) && ((node.priority <= lastNode.priority))) { //здесь добавленная вершина становится корнем
+  if ((lastNode.parent == null) && ((node.priority <= lastNode.priority))) {
     node.loc = "root";
     node.parent = null;
     node.left = lastNode;
@@ -65,7 +65,17 @@ function updateHeigth(node) {
 }
 
 function updateCoordinateX(node) {
-  
+  if (node != null) {
+    if (node.loc == "root") {
+      node.x = width / 2;
+    } else if (node.loc == 'left') {
+      node.x = node.parent.x - ((2 ** (getHeigth(node.right) + 1)) * 10);
+    } else if (node.loc == "right") {
+      node.x = node.parent.x + ((2 ** (getHeigth(node.left) + 1)) * 10);
+    }
+    updateCoordinateX(node.left);
+    updateCoordinateX(node.right);
+  }
 }
 
 function updateCoordinateY(node) {
@@ -84,7 +94,7 @@ function getRoot(node) {
   while (node.loc != 'root') {
     node = node.parent;
   }
-  return parent;
+  return node;
 }
 
 function getHeigth(node) {
@@ -95,10 +105,14 @@ function getHeigth(node) {
   }
 }
 
-
-let roots = buildCartesianTree([[1, 5],  [2,4], [3, 6], [4, 8]]);
-while(roots.loc != "root") {
-  roots = roots.parent;
+function update(node) {
+  let newHeap = getRoot(node);
+  updateCoordinateY(newHeap);
+  updateCoordinateX(newHeap);
+  return newHeap;
 }
-updateCoordinateY(roots);
+
+
+let roots = buildCartesianTree([[1, 5],  [2,4], [3, 6], [4, 8], [5, 5], [6, 2]]);
+roots = update(roots)
 console.log(roots);
