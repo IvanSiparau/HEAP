@@ -9,16 +9,19 @@ class Node {
 }
 
 function insertNode(lastNode, node) {
-  if (lastNode == null) {
+  if (lastNode == null) {  //здесь рассматриваем самую первую вешину
+    node.loc = "root";
     return node;
   }
   while((lastNode.parent != null) && (node.priority <= lastNode.priority)) {
     lastNode = lastNode.parent;
   }
-  if ((lastNode.parent == null) && ((node.priority <= lastNode.priority))) {
+  if ((lastNode.parent == null) && ((node.priority <= lastNode.priority))) { //здесь добавленная вершина становится корнем
+    node.loc = "root";
     node.parent = null;
     node.left = lastNode;
-    lastNode.parent = node;
+    node.left.parent = node;
+    node.left.loc = "left";
     return node;
   } else  {
     if (lastNode.right != null) {
@@ -27,6 +30,11 @@ function insertNode(lastNode, node) {
     }
     lastNode.right = node;
     node.parent = lastNode;
+    node.loc = "right";
+    if (node.left != null) {
+      node.left.loc = "left";
+      
+    }
     return node;
   }
 }
@@ -49,8 +57,34 @@ function buildCartesianTree(nodes) {
   return root;
 }
 
-let roots = buildCartesianTree([[1, 5],  [2,4], [3, 6], [4, 8], [5, 5], [6, 2]]);
-console.log("key: " + String(roots.key) + " priority: " + String(roots.priority));
-
-console.log(roots);
 // Мне нужно реализовать функцию update, и вести координаты x, y. Написать функцию для построения самого дерево, пуускай без  каких,то анимаций,  но сделать ее, черт побери, хотя это изи чел.
+function getHeigth(node) {
+  if (node == null) {
+    return 0;
+  } else {
+    return node.heigth; 
+  }
+}
+function updateHeigth(node) {
+  
+}
+
+function updateCoordinateX(node) {
+  
+}
+
+function updateCoordinateY(node) {
+  if (node != null) {
+    if (node.loc == 'root') {
+      node.y = 50;
+    } else {
+      node.y = node.parent.y + 40;
+    }
+    updateCoordinateY(node.left);
+    updateCoordinateY(node.right);
+  } 
+}
+
+let roots = buildCartesianTree([[1, 5], [2, 4], [3, 6], [4, 8], [5, 5], [6, 2]]);
+updateCoordinateY(roots);
+console.log(roots);
