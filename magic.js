@@ -1,4 +1,4 @@
-let root = null;
+//let root = null;
 let width = 1000;
 let  heigth;
 let time = 1000;

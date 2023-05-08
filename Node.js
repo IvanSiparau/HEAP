@@ -26,6 +26,7 @@ function insertNode(lastNode, node) {
     node.left.parent = node;
     node.left.loc = "left";
     node.height = getHeigth(lastNode) + 1;
+    mode = newAddedNodeBeginRootOfHeap;
     return node;
   } else  {
     if (lastNode.right != null) {
@@ -39,6 +40,7 @@ function insertNode(lastNode, node) {
       node.left.loc = "left";
     }
     updateHeigth(node);
+    mode = newAddedNodeBeginTheRigthSonOfNode;
     return node;
   }
 }
@@ -56,19 +58,24 @@ function buildCartesianTree(nodes) {
       drawNewAddedNode(node);
     }
     root = insertNode(root, node);
-    lastNode = node;
-    newOurHeap = update(root);
+    
+    newOurHeap = update(root, node);
     if (isFirst) {
       drawFirstNode(newOurHeap);
       isFirst = false;
     } else {
-      drawUpdate(newOurHeap);
+      drawUpdate(newOurHeap, nodes[i][0], nodes[i][1]);
       count++;
+      if (mode == newAddedNodeBeginRootOfHeap) {
+        drawNewLineBetweenOurHeapAndNewNode(root, lastNode, mode);
+      } else if (mode == newAddedNodeBeginTheRigthSonOfNode) {
+        drawNewLineBetweenOurHeapAndNewNode(node, lastNode, mode);
+      }
     }
+    lastNode = node;
   }
   return root;
 }
-
 
 let roots = buildCartesianTree([[1, 5],  [2,4], [3, 6], [4, 8], [5, 5], [6, 2]]);
 roots = update(roots)
