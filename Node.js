@@ -64,7 +64,7 @@ function buildCartesianTree(nodes) {
       drawFirstNode(newOurHeap);
       isFirst = false;
     } else {
-      drawUpdate(newOurHeap, nodes[i][0], nodes[i][1]);
+      drawUpdate(newOurHeap, node);
       count++;
       if (mode == newAddedNodeBeginRootOfHeap) {
         drawNewLineBetweenOurHeapAndNewNode(root, lastNode, mode);
@@ -77,6 +77,6 @@ function buildCartesianTree(nodes) {
   return root;
 }
 
-let roots = buildCartesianTree([[1, 5],  [2,4], [3, 6], [4, 8], [5, 5], [6, 2]]);
+let roots = buildCartesianTree([[3, 56], [16, 33], [22, 89], [31, 17], [41, 49], [53, 22], [69, 36]]);
 roots = update(roots)
 console.log(roots);

@@ -37,7 +37,7 @@ function drawAllHeap(node) {
 
 function getNameOfClassNode (node) {
   if (node != null) {
-  return "NodeWithKey" + String(node.key) + "AndPrioriy" + String(node.key);}
+  return "NodeWithKey" + String(node.key) + "AndPrioriy" + String(node.priority);}
 }
 
 function getNameOfClassBetweenTwoNode(firstNode, secondNode) {
@@ -75,7 +75,7 @@ function drawNewAddedNode(node, lastNode) {
   count++;
 }
 
-function drawUpdate(root, key, priority){
+function drawUpdate(root, node){
   if (root != null) {
     const circle = d3.select("." + getNameOfClassNode(root));
     circle.transition()
@@ -102,8 +102,7 @@ function drawUpdate(root, key, priority){
           .attr('y2', root.right.y)
           .delay(time * count);
         }
-    if ((root.key == key && root.priority == priority)) {
-      console.log(key);
+    if ((root.key == node.key && root.priority == node.priority)) {
       if (root.parent != null && root.left != null) {
                   d3.select("." + getNameOfClassBetweenTwoNode(root.parent, root.left))
                     .transition()
@@ -115,8 +114,8 @@ function drawUpdate(root, key, priority){
                     .delay(time * count);
       }
     }
-    drawUpdate(root.left);
-    drawUpdate(root.right);
+    drawUpdate(root.left, node);
+    drawUpdate(root.right, node);
   }
 }
 
@@ -132,7 +131,8 @@ function drawNewLineBetweenOurHeapAndNewNode(node, lastNode, modes) {
             .attr("x2", x1)
             .attr("y2", y1)
             .attr('class', getNameOfClassBetweenTwoNode(node, node.left))
-            .attr("stroke", "red")
+            .attr("stroke", "#960000")
+            .attr("stroke-opacity", 0.5)
             .attr("stroke-width", 2);
 
         // Анимация линии
@@ -150,7 +150,8 @@ function drawNewLineBetweenOurHeapAndNewNode(node, lastNode, modes) {
        .attr("x2", x1)
        .attr("y2", y1)
        .attr('class', getNameOfClassBetweenTwoNode(node.parent, node))
-       .attr("stroke", "blue")
+       .attr("stroke", "#960000")
+       .attr("stroke-opacity", 0.5)
        .attr("stroke-width", 2);
       lineBetweenParentOfAddedNodeAndNode.transition()
        .duration(time)
@@ -165,7 +166,8 @@ function drawNewLineBetweenOurHeapAndNewNode(node, lastNode, modes) {
           .attr("x2", x1)
           .attr("y2", y1)
           .attr('class', getNameOfClassBetweenTwoNode(node, node.left))
-          .attr("stroke", "black")
+          .attr("stroke", "#960000")
+          .attr("stroke-opacity", 0.5)
           .attr("stroke-width", 2);
         lineBetweenAddedNodeAndLeftSon.transition()
           .duration(time)
