@@ -17,6 +17,7 @@ function insertNode(lastNode, node) {
     return node;
   }
   while((lastNode.parent != null) && (node.priority <= lastNode.priority)) {
+    drawLastAddedNoode(lastNode);
     lastNode = lastNode.parent;
   }
   if ((lastNode.parent == null) && ((node.priority <= lastNode.priority))) {
@@ -51,14 +52,13 @@ function buildCartesianTree(nodes) {
   let lastNode = null;
   let isFirst = true;
   let newOurHeap = null;
-  for (let i = 0; i < nodes.length; i++) {
+  for (let i = 0; i < nodes.length; i++) { 
     const [key, priority] = nodes[i];
     const node = new Node(key, priority);
     if (!isFirst) {
       drawNewAddedNode(node);
     }
     root = insertNode(root, node);
-    
     newOurHeap = update(root, node);
     if (isFirst) {
       drawFirstNode(newOurHeap);
@@ -73,10 +73,7 @@ function buildCartesianTree(nodes) {
       }
     }
     lastNode = node;
+    drawFirstByPass(node);
   }
   return root;
 }
-
-let roots = buildCartesianTree([[3, 56], [16, 33], [22, 89], [31, 17], [41, 49], [53, 22], [69, 36]]);
-roots = update(roots)
-console.log(roots);

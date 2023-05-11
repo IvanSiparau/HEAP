@@ -10,9 +10,9 @@ function updateCoordinateX(node) {
     if (node.loc == "root") {
       node.x = width / 2;
     } else if (node.loc == 'left') {
-      node.x = node.parent.x - ((2 ** (getHeigth(node.right) + 1)) * 10);
+      node.x = node.parent.x - ((2 ** (getHeigth(node.right) + 1.5)) * 10);
     } else if (node.loc == "right") {
-      node.x = node.parent.x + ((2 ** (getHeigth(node.left) + 1)) * 10);
+      node.x = node.parent.x + ((2 ** (getHeigth(node.left) + 1.5)) * 10);
     }
     updateCoordinateX(node.left);
     updateCoordinateX(node.right);
@@ -24,7 +24,7 @@ function updateCoordinateY(node) {
     if (node.loc == 'root') {
       node.y = 50;
     } else {
-      node.y = node.parent.y + 40;
+      node.y = node.parent.y + 50;
     }
     updateCoordinateY(node.left);
     updateCoordinateY(node.right);

@@ -1,8 +1,3 @@
-svg = d3.select(".ourHeap").append("svg")
-  .attr("width", width)
-  .attr("height", 500);
-  
-  
 function drawAllHeap(node) {
   if (node != null) {
     if (node.parent != null) {
@@ -23,7 +18,7 @@ function drawAllHeap(node) {
     svg.append("circle")
       .attr("cx", node.x)
       .attr("cy", node.y)
-      .attr('r', 15)
+      .attr('r', radius)
       .attr('fill', 'red');
     svg.append('text')
       .attr('x', node.x)
@@ -53,7 +48,7 @@ function drawFirstNode (node) {
     .attr("fill", "white");
   circle.transition()
     .duration(time)
-    .attr("r", 15)
+    .attr("r", radius)
     .delay(time * count)
     .style("fill", '#960000');
   count++;
@@ -69,7 +64,7 @@ function drawNewAddedNode(node, lastNode) {
     .attr("fill", "white");
   circle.transition()
     .duration(time)
-    .attr("r", 15)
+    .attr("r", radius)
     .delay(time * count)
     .style("fill", '#960000');
   count++;
@@ -103,15 +98,21 @@ function drawUpdate(root, node){
           .delay(time * count);
         }
     if ((root.key == node.key && root.priority == node.priority)) {
+      const addedNode = d3.select('.theLastAddedNode');
+      addedNode.transition()
+        .duration(time)
+        .attr('cx', root.x)
+        .attr('cy', root.y)
+        .delay(time * count);
       if (root.parent != null && root.left != null) {
-                  d3.select("." + getNameOfClassBetweenTwoNode(root.parent, root.left))
-                    .transition()
-                    .duration(time)
-                    .attr('x1', root.parent.x)
-                    .attr('y1', root.parent.y)
-                    .attr('x2', root.left.x)
-                    .attr('y2', root.left.y)
-                    .delay(time * count);
+        d3.select("." + getNameOfClassBetweenTwoNode(root.parent, root.left))
+          .transition()
+          .duration(time)
+          .attr('x1', root.parent.x)
+          .attr('y1', root.parent.y)
+          .attr('x2', root.left.x)
+          .attr('y2', root.left.y)
+          .delay(time * count);
       }
     }
     drawUpdate(root.left, node);
@@ -123,8 +124,6 @@ function drawNewLineBetweenOurHeapAndNewNode(node, lastNode, modes) {
   if (modes == newAddedNodeBeginRootOfHeap) {
         var x1 = node.x, y1 = node.y;
         var x2 = node.left.x, y2 = node.left.y;
-
-        // Начальное положение линии
         var line = svg.append("line")
             .attr("x1", x1)
             .attr("y1", y1)
@@ -134,8 +133,6 @@ function drawNewLineBetweenOurHeapAndNewNode(node, lastNode, modes) {
             .attr("stroke", "#960000")
             .attr("stroke-opacity", 0.5)
             .attr("stroke-width", 2);
-
-        // Анимация линии
         line.transition()
             .duration(time)
             .delay(time * count)
@@ -183,5 +180,48 @@ function drawNewLineBetweenOurHeapAndNewNode(node, lastNode, modes) {
           .delay(count * time);
       }
   }
+  count++;
+}
+
+function drawFirstByPass(nodesss) {
+var circle_ = svg.append("circle")
+  .attr("cx", nodesss.x)
+  .attr("cy", nodesss.y)
+  .attr("r", radius + 1)
+  .attr("fill", "none")
+  .attr("stroke", "blue")
+  .attr("class", "pass")
+  .attr("stroke-width", 0);
+  circle_.transition()
+  .duration(time)
+  .attr("stroke-width", 2)
+  .delay(time * count);
+  count++;
+    
+}
+function getCircle(node) {
+  var circle = svg.select('.' + getNameOfClassNode(node));
+  var x = circle.attr('cx');
+  var y = circle.attr('cy');
+  return [x, y];
+}
+
+function drawLastAddedNoode(nodes) {
+  var circless = svg.select('.pass');
+  circless.transition()
+    .duration(time)
+    .attr('cx' ,function(){
+          var circle = svg.select('.' + getNameOfClassNode(nodes));
+          var x = circle.attr('cx');
+          var y = circle.attr('cy');
+      return x;
+    })
+    .attr('cy', function() {
+                var circle = svg.select('.' + getNameOfClassNode(nodes));
+                var x = circle.attr('cx');
+                var y = circle.attr('cy');
+        return y;
+    })
+    .delay(time * (count));
   count++;
 }
