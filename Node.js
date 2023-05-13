@@ -8,17 +8,6 @@ class Node {
     }
 }
 
-function find(nodess, findNode) {
-    if (nodess != null) {
-        if (nodess.key === findNode.key && nodess.priority === findNode.priority) {
-            console.log(nodess);
-            return nodess;
-        }
-        find(nodess.left, findNode);
-        find(nodess.right, findNode);
-    }
-}
-
 function insertNode(lastNode, node) {
     if (lastNode == null) {
         node.loc = "root";
@@ -27,11 +16,20 @@ function insertNode(lastNode, node) {
         node.height = 1;
         return node;
     }
+    sendMessageAboutAddedNode(node);
     while ((lastNode.parent != null) && (node.priority <= lastNode.priority)) {
-        drawFirstAddedNode(lastNode);
+        drawPass(lastNode);
+        drawComparison(lastNode, node);
         lastNode = lastNode.parent;
+        /*        if (lastNode.parent == null) {
+                    drawComparison(lastNode, node);
+                    drawPass(lastNode);
+                }*/
     }
     if ((lastNode.parent == null) && ((node.priority <= lastNode.priority))) {
+        drawPass(lastNode);
+        drawComparison(lastNode, node);
+        sendMessageAboutNewAddedNodeBeginRoot();
         node.loc = "root";
         node.parent = null;
         node.left = lastNode;
@@ -41,6 +39,9 @@ function insertNode(lastNode, node) {
         mode = newAddedNodeBeginRootOfHeap;
         return node;
     } else {
+        drawPass(lastNode);
+        drawComparison(lastNode, node);
+        sendMessageAboutFoundNodeWithPriorityLessThenCurrent();
         if (lastNode.right != null) {
             lastNode.right.parent = node;
             node.left = lastNode.right;
@@ -63,29 +64,27 @@ function buildCartesianTree(nodes) {
     let lastNode = null;
     let isFirst = true;
     let newOurHeap = null;
+    sendMessageAboutSortNode();
     for (let i = 0; i < nodes.length; i++) {
         const [key, priority] = nodes[i];
         const node = new Node(key, priority);
-/*        if (!isFirst) {
-            drawNewAddedNode(node);
-        }*/
         root = insertNode(root, node);
         newOurHeap = update(root, node);
         if (isFirst) {
+            sendMessageAboutFirstNode();
             drawFirstNode(newOurHeap);
             isFirst = false;
             drawFirstAddedNode(node);
         } else {
             drawUpdate(newOurHeap, node);
-            let NewNode = find(newOurHeap, node);
-            //console.log(NewNode);
             count++;
-            if (mode == newAddedNodeBeginRootOfHeap) {
+            if (mode === newAddedNodeBeginRootOfHeap) {
                 drawNewLineBetweenOurHeapAndNewNode(root, lastNode, mode);
-            } else if (mode == newAddedNodeBeginTheRigthSonOfNode) {
+            } else if (mode === newAddedNodeBeginTheRigthSonOfNode) {
                 drawNewLineBetweenOurHeapAndNewNode(node, lastNode, mode);
             }
         }
+        drawPassByLastAddedNode(node);
         lastNode = node;
     }
     return root;

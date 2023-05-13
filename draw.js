@@ -30,6 +30,10 @@ function drawAllHeap(node) {
     }
 }
 
+function getNameOfClassText(node) {
+    return 'textOf' + getNameOfClassNode(node);
+}
+
 function getNameOfClassNode(node) {
     if (node != null) {
         return "NodeWithKey" + String(node.key) + "AndPrioriy" + String(node.priority);
@@ -52,6 +56,17 @@ function drawFirstNode(node) {
         .attr("r", radius)
         .delay(time * count)
         .style("fill", '#960000');
+    var textOfFirstNode = svg.append('text')
+        .attr('x', node.x - radius + 1)
+        .attr('y', node.y + 2)
+        .attr('fill', 'white')
+        .attr('class', getNameOfClassText(node))
+        .text(String(node.key) + "," + String(node.priority))
+        .style('opacity', 0);
+    textOfFirstNode.transition()
+        .duration(time)
+        .style('opacity', 1)
+        .delay(time * count);
     count++;
 }
 
@@ -78,6 +93,12 @@ function drawUpdate(root, node) {
             .duration(time)
             .attr("cx", root.x)
             .attr('cy', root.y)
+            .delay(time * count);
+        var textOfNode = svg.select("." + getNameOfClassText(root));
+        textOfNode.transition()
+            .duration(time)
+            .attr('x', root.x - radius + 1)
+            .attr('y', root.y + 2)
             .delay(time * count);
         if (root.left != null) {
             d3.select("." + getNameOfClassBetweenTwoNode(root, root.left))
@@ -110,13 +131,35 @@ function drawUpdate(root, node) {
                 .duration(time)
                 .attr("r", radius)
                 .delay(time * count)
-                .style("fill", '#960000');
-            const addedNode = d3.select('.theLastAddedNode');
-            addedNode.transition()
+                .style("fill", "#960000");
+            var textOfNewAddedtNode = svg.append('text')
+                .attr('x', node.x - radius + 1)
+                .attr('y', node.y + 2)
+                .attr('fill', 'white')
+                .attr('class', getNameOfClassText(node))
+                .text(String(node.key) + "," + String(node.priority))
+                .style('opacity', 0);
+            textOfNewAddedtNode.transition()
                 .duration(time)
-                .attr('cx', root.x)
-                .attr('cy', root.y)
+                .style('opacity', 1)
                 .delay(time * count);
+            if (root.loc === "root") {
+                if (root.left != null) {
+                    var ourPass = svg.select(".passOfNode");
+                    ourPass.transition()
+                        .duration(time)
+                        .attr("cx", root.left.x)
+                        .attr("cy", root.left.y)
+                        .delay(time * count);
+                }
+            } else {
+                var ourPass = svg.select(".passOfNode");
+                ourPass.transition()
+                    .duration(time)
+                    .attr("cx", root.parent.x)
+                    .attr("cy", root.parent.y)
+                    .delay(time * count);
+            }
             if (root.parent != null && root.left != null) {
                 d3.select("." + getNameOfClassBetweenTwoNode(root.parent, root.left))
                     .transition()
@@ -125,6 +168,7 @@ function drawUpdate(root, node) {
                     .attr('y1', root.parent.y)
                     .attr('x2', root.left.x)
                     .attr('y2', root.left.y)
+                    .remove()
                     .delay(time * count);
             }
         }
@@ -209,11 +253,136 @@ function drawFirstAddedNode(node) {
         .attr('cy', getCircle(node)[1])
         .attr('r', radius + 1)
         .attr('fill', 'none')
-        .attr('stroke', 'blue')
+        .attr('stroke', "blue")
+        .attr('class', "passOfNode")
         .attr('stroke-width', 0);
     newCircle.transition()
         .duration(time)
-        .attr('stroke-width', 2)
+        .attr('stroke-width', 4)
+        .delay(time * count);
+    count++;
+}
+
+function drawPassByLastAddedNode(node) {
+    var theLastPass = svg.select(".passOfNode");
+    theLastPass.transition()
+        .duration(time)
+        .attr("cx", getCircle(node)[0])
+        .attr("cy", getCircle(node)[1])
+        .delay(time * count);
+    count++;
+}
+
+function drawPass(node) {
+    var theLastPass = svg.select('.passOfNode');
+    theLastPass.transition()
+        .duration(time)
+        .attr("cx", getCircle(node)[0])
+        .attr("cy", getCircle(node)[1])
+        .delay(time * count);
+    count++;
+}
+
+function drawComparison(node, newNode) {
+    var comparison = svg.append('text')
+        .attr('x', node.x + radius + 5)
+        .attr('y', node.y)
+        .text(String(newNode.priority) + " ∨ " + String(node.priority))
+        .style('opacity', 0);
+    comparison.transition()
+        .duration(0)
+        .style("opacity", 1)
+        .delay(time * count);
+    count++;
+    comparison.transition()
+        .duration(0)
+        .style('opacity', 0)
+        .remove()
+        .delay(count * time);
+    if (node.priority >= newNode.priority) {
+        var text = svg.append('text')
+            .attr('x', node.x + radius + 5)
+            .attr('y', node.y)
+            .text(String(newNode.priority) + " ⩽ " + String(node.priority))
+            .style('opacity', 0);
+        text.transition()
+            .duration(0)
+            .style("opacity", 1)
+            .delay(time * count);
+        count++;
+        text.transition()
+            .duration(time)
+            .style('opacity', 0)
+            .remove()
+            .delay(count * time);
+        count++;
+    } else {
+        var otherText = svg.append('text')
+            .attr('x', node.x + radius + 5)
+            .attr('y', node.y)
+            .text(String(newNode.priority) + " > " + String(node.priority))
+            .style('opacity', 0);
+        otherText.transition()
+            .duration(0)
+            .style("opacity", 1)
+            .delay(time * count);
+        count++;
+        otherText.transition()
+            .duration(time)
+            .style('opacity', 0)
+            .remove()
+            .delay(count * time);
+        count++;
+    }
+}
+
+function sendMessageAboutSortNode() {
+    var text = svg.append('text')
+        .attr('x', 10)
+        .attr('y', 20)
+        .attr('class', 'messageText')
+        .style('opacity', 0)
+        .text("Сначало отсортируем все вершины по ключам");
+    text.transition()
+        .duration(0)
+        .style("opacity", 1)
+        .delay(time * count);
+    count++;
+}
+
+function sendMessageAboutFirstNode() {
+    var text = svg.select('.messageText');
+    text.transition()
+        .duration(0)
+        .text("Самая первая вершина становиться корнем дерево \rпри этом запоминаем ее как последнию добавленую")
+        .delay(time * count);
+    count++;
+}
+
+function sendMessageAboutAddedNode(node) {
+    var text = svg.select('.messageText');
+    text.transition()
+        .duration(0)
+        .text("Хотим добавить вершину (" + String(node.key) + "," +
+            String(node.priority) + ") двигаемся вверх по родителям, пока не найдем вершину с приоритетом меньше или не дойдем до корня")
+        .delay(time * count);
+    count++;
+}
+
+function sendMessageAboutNewAddedNodeBeginRoot() {
+    var text = svg.select('.messageText');
+    text.transition()
+        .duration(0)
+        .text("Дошли до корня, тогда наша вершина становиться корнем при этом запоминаем ее как последнюю добавленую")
+        .delay(time * count);
+    count++;
+}
+
+function sendMessageAboutFoundNodeWithPriorityLessThenCurrent() {
+    var text = svg.select('.messageText');
+    text.transition()
+        .duration(0)
+        .text("Нашли первую вершину с приоритетом меньше, тогда наша вершина становиться правым сыном этой вершины, а правый сын - левым сыном новой вершины при этом запоминаем ее как последнюю добавленую")
         .delay(time * count);
     count++;
 }

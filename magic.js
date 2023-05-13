@@ -1,5 +1,5 @@
 //let root = null;
-let width = 1000;
+let width = 1700;
 let  heigth = 600;
 let time = 1000;
 let count = 0;
