@@ -4,18 +4,64 @@
     <meta charset="UTF-8">
     <title>HEAP</title>
     <link rel="stylesheet" href="style.css">
-    <script src = "https://d3js.org/d3.v4.min.js"></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
 </head>
 <body>
 <div id="title">
     <h1>Декартовое дерево</h1>
 </div>
-<div class="ourHeap">
-  <script src="magic.js"></script>
-  <script src="update.js"></script>
-  <script  src="draw.js"></script>
-  <script src="Node.js"></script>
-  <script src="buildTreap.js"></script>
+<div class="buttonOrInput">
+    <table>
+        <td class="inputAndButtonForBuildTreap">
+            <input type="text" class="buildTreap" placeholder="(1, 2) ... (23, 43)">
+            <button class="buttonForBuildTreap">build</button>
+            <span class="error" id="build">сообщение об ошибки</span>
+        </td>
+        <td class="inputAndButtonForSplitOurTreap">
+            <input type="text" class="splitOurTreap" placeholder="ключ">
+            <button class="buttonForSplitOurTreap">split</button>
+            <span class="error" id="split">сообщение об ошибки</span>
+        </td>
+        <td class="inputAndButtonForMergeOurTreaps">
+            <input type="text" class="MergeOurTreaps" placeholder="(1, 2) ... (29, 12)">
+            <button class="buttonForMerge">merge</button>
+            <span class="error" id="merge">сообщение об ошибки</span>
+        </td>
+        <td class="inputAndButtonForInsertNewNode">
+            <input type="text" class="insertNewNode" placeholder="ключ приоритет">
+            <button class="buttonForInsertNewNode">insert</button>
+            <span class="error" id="insert">сообщение об ошибки</span>
+        </td>
+        <td class="inputAndButtonForRemoveNode">
+            <input type="text" class="removeNode" placeholder="ключ">
+            <button class="buttonForRemoveNode">remove</button>
+            <span class="error" id="remove">сообщение об ошибки</span>
+        </td>
+        <td class="buttonForBuildRandomTreap">
+            <button class="randomTreap">random</button>
+        </td>
+        <td class="buttonForDeleteAll">
+            <button class="deleteAll">очистить</button>
+        </td>
+        <td>
+            <input type="range" min="0" max="10000" step="1000">
+        </td>
+    </table>
+    <button class="deleteFirstTreapAfterSplit" style="display: none">удалить 1</button>
+    <button class="deleteSecondTreapAfterSplit" style="display: none">удалить 2</button>
+    <button class="MergeOurTreapsAftterSplit" style="display: none">merge</button>
 </div>
+<div class="workingPart">
+    <div id="code" style="display: block"></div>
+    <div class="ourHeap"></div>
+</div>
+<script src="magic.js"></script>
+<script src="code.js"></script>
+<script src="update.js"></script>
+<script src="draw.js"></script>
+<script src="Node.js"></script>
+<script src="buildTreap.js"></script>
+<script src="checkCorrectDataForScriptAndOtherFunction.js"></script>
+<script src="script.js"></script>
 </body>
 </html>

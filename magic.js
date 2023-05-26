@@ -1,10 +1,15 @@
 //let root = null;
-let width = 1700;
+let width = /*1700*/ 1800;
 let  heigth = 600;
-let time = 1000;
+let time = 100;
 let count = 0;
-let radius = 25;
+let radius = 24;
 const newAddedNodeBeginRootOfHeap = 1;
 const newAddedNodeBeginTheRigthSonOfNode = 2;
 let  mode;
+const colorOfNode = '#e7adad';
+const colorOfPass = '#960000';
+const colorOfText = 'black';
 let svg;
+const leftLocationForSplit = 'left';
+const rightLocationForSplit = 'right';

@@ -15,11 +15,85 @@ body {
     color: #ffffff;
 }
 
-canvas {
+/*canvas {
     padding: 0 10px 0 20px;
     height: 500px;
-}
+}*/
 
 .ourHeap {
-  height: 600px;
+    height: 600px;
+    float: right;
+}
+
+#code {
+    float: left;
+}
+
+.inputAndButtonForBuildTreap {
+    /*    position: relative;
+        top: 0;
+        left: 10px;*/
+}
+
+.error {
+    /*    position: absolute;
+        top: 50%;
+        left: 5px;*/
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+    display: none;
+
+}
+
+.buttonOrInput {
+    position: relative;
+    background: #e7adad;
+    height: 50px;
+    display: flex;
+
+    /*justify-content: center;*/
+    /*align-items: center;*/
+}
+
+table {
+    /*    justify-content: center;
+        align-items: center;*/
+    margin-left: 15px;
+}
+
+.splitOurTreap {
+    width: 60px;
+}
+
+.removeNode {
+    width: 60px;
+}
+
+.insertNewNode {
+    width: 120px;
+}
+
+.buildTreap {
+    width: 180px;
+}
+
+.MergeOurTreaps {
+    width: 180px;
+}
+
+#code {
+    width: 410px;
+    height: 400px;
+    display: block;
+}
+
+code {
+    white-space: pre;
+    display: block;
+}
+
+.workingPart {
+    display: flex;
+    /*overflow: auto;*/
 }
