@@ -58,17 +58,7 @@ function getHeigthForSplit(root) {
     if (root === null) {
         return 0;
     } else {
-        //root.height = math.max(updateHeigthForSplit(root.left), updateHeigthForSplit(root.right)) + 1
         return Math.max(getHeigthForSplit(root.left), getHeigthForSplit(root.right)) + 1;
-    }
-}
-
-function updateCoordinateForNewCoordinateOfOurSplitTreap(root, distanceX, distanceY) {
-    if (root != null) {
-        root.x += distanceX;
-        root.y += distanceY;
-        updateCoordinateForNewCoordinateOfOurSplitTreap(root.left, distanceX, distanceY);
-        updateCoordinateForNewCoordinateOfOurSplitTreap(root.right, distanceX, distanceY);
     }
 }
 

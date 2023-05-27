@@ -12,8 +12,6 @@ function buildTreap(listOfNodes) {
             return a[1] - b[1];
         }
     });
-    /*  console.log(listOfNodes);
-      buildCartesianTree(listOfNodes);*/
     let Treap = new BuildTreap();
     Treap.setListOfNodes(listOfNodes);
     Treap.buildTreap();

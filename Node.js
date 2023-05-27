@@ -43,25 +43,26 @@ class BuildTreap {
             node.loc = "root";
             node.left = null;
             node.right = null;
+            node.x = width / 2;
+            node.y = 50;
             node.height = 1;
             this.root = node;
             return;
         }
-        sendMessageAboutAddedNode(node);
+
         changeColorOfSelector('code4', 'code5');
         changeColorOfSelector('code5', 'code6');
         while ((this.lastNode.parent != null) && (node.priority < this.lastNode.priority)) {
             drawPass(this.lastNode);
-            drawComparison(this.lastNode, node);
+            drawComparisonForBuild(this.lastNode, node);
             this.lastNode = this.lastNode.parent;
         }
         this.lastSetion = 'code6'
         if ((this.lastNode.parent == null) && ((node.priority < this.lastNode.priority))) {
             this.lastSetion = 'code7';
             drawPass(this.lastNode);
-            drawComparison(this.lastNode, node);
+            drawComparisonForBuild(this.lastNode, node);
             changeColorOfSelector('code6', 'code7');
-            //sendMessageAboutNewAddedNodeBeginRoot();
             node.loc = "root";
             node.parent = null;
             node.left = this.lastNode;
@@ -73,7 +74,7 @@ class BuildTreap {
             return;
         } else {
             drawPass(this.lastNode);
-            drawComparison(this.lastNode, node);
+            drawComparisonForBuild(this.lastNode, node);
             changeColorOfSelector('code6', 'code11');
             this.lastSetion = 'code11';
             //sendMessageAboutFoundNodeWithPriorityLessThenCurrent();
@@ -94,14 +95,10 @@ class BuildTreap {
     }
 
     buildTreap() {
-        /*let root = null;*/
-        /*let lastNode = null;*/
         changeColorOfSelector(0, 'code1');
         changeColorOfSelector('code1', 'code2');
         let isFirst = true;
         let newOurHeap = null;
-
-        /*sendMessageAboutSortNode();*/
         changeColorOfSelector('code2', 'code3');
         this.lastSetion = 'code3';
         for (let i = 0; i < this.listOfNodes.length; i++) {
@@ -111,7 +108,6 @@ class BuildTreap {
             this.insertNode(node);
             newOurHeap = update(this.root, node);
             if (isFirst) {
-                //sendMessageAboutFirstNode();
                 changeColorOfSelector('code4', 'code5');
                 changeColorOfSelector('code5', 'code7');
                 changeColorOfSelector('code7', 'code8');
@@ -135,7 +131,7 @@ class BuildTreap {
             }
             changeColorOfSelector(this.lastSetion, 'code16');
             this.lastSetion = 'code16'
-            drawPassByLastAddedNode(node);
+            drawPass(node);
             this.lastNode = node;
         }
         delatePassAndMessage();
@@ -161,7 +157,7 @@ class TreapForSplit {
     }
 
     drawOurTreapForSlip() {
-        drawTreapForSplit(this.root);
+        drawOnlyKey(this.root);
         count++;
     }
 
@@ -178,11 +174,15 @@ class TreapForSplit {
     }
 
     updateNewLocationForLeftSplit() {
-        updateCoordinateForNewCoordinateOfOurSplitTreap(this.firstTreap, (width / 4) - this.firstTreap.x, 50 - this.firstTreap.y)
+        this.firstTreap.x = width / 4;
+        this.firstTreap.y = 50;
+        updateForMerge(this.firstTreap);
     }
 
     updateNewLocationForRightSplit() {
-        updateCoordinateForNewCoordinateOfOurSplitTreap(this.secondTreap, 3 * (width / 4) - this.secondTreap.x, 50 - this.secondTreap.y)
+        this.secondTreap.x = 3 * width / 4;
+        this.secondTreap.y = 50;
+        updateForMerge(this.secondTreap);
     }
 
     Split(root, key) {
@@ -192,15 +192,14 @@ class TreapForSplit {
             drawPassForSplit(root);
             changeColorOfSelector(this.lastSection, 'code2')
             changeColorOfSelector('code2', 'code3')
-            this.lastSection  = 'code3';
+            this.lastSection = 'code3';
             return [null, null];
         } else if (root.key < key) {
             drawPassForSplit(root);
-            drawComparisonParameterOfRootWithValue(root, root.key, key);
+            drawComparisonForSplit(root, key)
             changeColorOfSelector(this.lastSection, 'code4');
             changeColorOfSelector('code4', 'code5');
-            this.lastSection = 'code5'
-            //drawComparisonParameterOfRootWithValue(root, root.key, key);
+            this.lastSection = 'code5';
             let [left, right] = this.Split(root.right, key);
             changeColorOfSelector(this.lastSection, 'code6')
             changeLineBetweenTwoNode(root, root.right, left);
@@ -214,7 +213,8 @@ class TreapForSplit {
             return [root, right];
         } else {
             drawPassForSplit(root);
-            drawComparisonParameterOfRootWithValue(root, root.key, key);
+            drawComparisonForSplit(root, key);
+            //drawComparisonParameterOfRootWithValue(root, root.key, key);
             changeColorOfSelector(this.lastSection, 'code8')
             changeColorOfSelector('code8', 'code9')
             this.lastSection = 'code9';
@@ -240,10 +240,6 @@ class TreapForSplit {
             this.firstTreap.parent = null;
             if (right != null) {
                 this.updateNewLocationForLeftSplit();
-                drawOurSplitTreap(this.firstTreap);
-                UpdateCoordinateYForSplit(this.firstTreap);
-                updateHeightForSplitTreap(this.firstTreap);
-                UpdateCoordinateXForSplit(this.firstTreap);
             }
         }
         if (right != null) {
@@ -252,18 +248,18 @@ class TreapForSplit {
             this.secondTreap.parent = null;
             if (left != null) {
                 this.updateNewLocationForRightSplit();
-                drawOurSplitTreap(this.secondTreap);
-                UpdateCoordinateYForSplit(this.secondTreap);
-                updateHeightForSplitTreap(this.secondTreap);
-                UpdateCoordinateXForSplit(this.secondTreap);
             }
         }
-        count += 2;
-        drawOurSplitTreap(this.firstTreap);
-        drawOurSplitTreap(this.secondTreap);
+        count += 1;
+        drawAnimationTreapInNewNode(this.firstTreap);
+        drawAnimationTreapInNewNode(this.secondTreap);
+        count++;
+        drawKeyAndPriority(this.secondTreap);
+        drawKeyAndPriority(this.firstTreap);
     }
 
 }
+
 class TreapsForMerge {
     constructor() {
         this.root = null;
@@ -289,8 +285,8 @@ class TreapsForMerge {
 
     drawTreapsForMerge() {
         if (this.firstTreap != null && this.secondTreap != null) {
-            drawOneTreapForMerge(this.firstTreap);
-            drawOneTreapForMerge(this.secondTreap);
+            drawOnlyPriority(this.firstTreap);
+            drawOnlyPriority(this.secondTreap);
             count++;
         }
     }
@@ -298,9 +294,15 @@ class TreapsForMerge {
     mergeOurTreaps() {
         this.drawTreapsForMerge();
         this.root = merge(this.firstTreap, this.secondTreap);
+        this.root.x = width / 2;
+        this.root.y = 50;
+        this.root = updateForMerge(this.root);
+        drawAnimationTreapInNewNode(this.root);
+        count++
+        drawKeyAndPriority(this.root);
+        count++;
         this.secondTreap = null;
         this.firstTreap = null;
-        console.log(this.root);
     }
 }
 
@@ -324,7 +326,7 @@ function merge(leftTree, rightTree) {
             leftTree.right.parent = leftTree;
         }
         let newRoots = updateForMerge(leftTree);
-        drawOurMergesTreap(newRoots);
+        drawAnimationTreapInNewNode(newRoots);
         count++;
         return leftTree;
     } else {
@@ -338,7 +340,7 @@ function merge(leftTree, rightTree) {
 
         }
         let newRoots = updateForMerge(rightTree);
-        drawOurMergesTreap(newRoots);
+        drawAnimationTreapInNewNode(newRoots);
         count++;
         return rightTree;
     }
@@ -351,11 +353,6 @@ function IsNodeEque(firstNode, secondNode) {
         return true;
     }
     return false;
-}
-
-function normalizationCoordinateForTreap(root) {
-    updateCoordinateX(root);
-    updateCoordinateY(root);
 }
 
 class AddedNodeToOurTreap {
@@ -394,51 +391,51 @@ class AddedNodeToOurTreap {
             SplitTreap.setKeyForSplit(this.addedNode[0]);
             SplitTreap.splitOurTreap();
             if (SplitTreap.getSecondTreap() == null) {
-                updateCoordinateForNewCoordinateOfOurSplitTreap(SplitTreap.getFirstTreap(),
-                    (width / 4) - SplitTreap.getFirstTreap().x,
-                    50 - SplitTreap.getFirstTreap().y)
-                drawOurSplitTreap(SplitTreap.getFirstTreap());
+                let root = SplitTreap.getFirstTreap();
+                root.x = width / 4;
+                root.y = 50;
+                root = updateForMerge(root);
+                drawAnimationTreapInNewNode(root);
                 count++;
                 let newAddedNode = new Node(this.addedNode[0], this.addedNode[1]);
                 newAddedNode.x = width / 2;
                 newAddedNode.y = 50;
                 newAddedNode.loc = 'root';
                 drawFirstNode(newAddedNode);
-                let MergeTreap = new TreapsForMerge();
-                MergeTreap.setFirstTreap(SplitTreap.getFirstTreap());
-                MergeTreap.setSecondTreap(newAddedNode);
-                MergeTreap.drawTreapsForMerge();
+                drawOnlyPriority(newAddedNode);
+                drawOnlyPriority(root);
                 count++;
-                MergeTreap.mergeOurTreaps();
-                normalizationCoordinateForTreap(MergeTreap.getRoot());
-                drawNormalizationTreap(MergeTreap.getRoot());
+                root = merge(root, newAddedNode);
+                root.x = width / 2;
+                root.y = 50;
+                root = updateForMerge(root);
+                drawAnimationTreapInNewNode(root);
                 count++;
-                drawTextAboutKeyAndPriority(MergeTreap.getRoot());
-                count++;
-                this.root = MergeTreap.getRoot();
+                drawKeyAndPriority(root);
+                this.root = root;
                 return;
             } else if (SplitTreap.getFirstTreap() == null) {
-                updateCoordinateForNewCoordinateOfOurSplitTreap(SplitTreap.getSecondTreap(),
-                    (3 * width) / 4 - SplitTreap.getSecondTreap().x,
-                    50 - SplitTreap.getSecondTreap().y);
-                drawOurSplitTreap(SplitTreap.getSecondTreap());
+                let root = SplitTreap.getSecondTreap();
+                root.x  = 3 * width / 4;
+                root.y = 50;
+                root = updateForMerge(root);
+                drawAnimationTreapInNewNode(root);
                 let newAddedNode = new Node(this.addedNode[0], this.addedNode[1]);
                 newAddedNode.x = width / 2;
                 newAddedNode.y = 50;
                 newAddedNode.loc = 'root';
                 drawFirstNode(newAddedNode);
-                let MergeTreap = new TreapsForMerge();
-                MergeTreap.setSecondTreap(SplitTreap.getSecondTreap());
-                MergeTreap.setFirstTreap(newAddedNode);
-                MergeTreap.drawTreapsForMerge();
+                drawOnlyPriority(root);
+                drawOnlyPriority(newAddedNode);
                 count++;
-                MergeTreap.mergeOurTreaps();
-                normalizationCoordinateForTreap(MergeTreap.getRoot());
-                drawNormalizationTreap(MergeTreap.getRoot());
+                root = merge(newAddedNode, root);
+                root.x = width / 2;
+                root.y = 50;
+                root = updateForMerge(root);
+                drawAnimationTreapInNewNode(root);
                 count++;
-                drawTextAboutKeyAndPriority(MergeTreap.getRoot());
-                count++;
-                this.root = MergeTreap.getRoot();
+                drawKeyAndPriority(root);
+                this.root = root;
                 return;
             }
             let newAddedNode = new Node(this.addedNode[0], this.addedNode[1]);
@@ -446,29 +443,24 @@ class AddedNodeToOurTreap {
             newAddedNode.y = 50;
             newAddedNode.loc = 'root';
             drawFirstNode(newAddedNode);
-            let MergeTreap = new TreapsForMerge();
-            MergeTreap.setFirstTreap(SplitTreap.getFirstTreap());
-            MergeTreap.setSecondTreap(newAddedNode);
-            MergeTreap.drawTreapsForMerge();
+            drawOnlyPriority(newAddedNode);
+            drawOnlyPriority(SplitTreap.getFirstTreap());
+            let root = merge(SplitTreap.getFirstTreap(), newAddedNode);
+            root.x = width / 4;
+            root.y = 50;
+            root = updateForMerge(root);
+            drawAnimationTreapInNewNode(root);
             count++;
-            MergeTreap.mergeOurTreaps();
-            drawTextAboutKeyAndPriority(MergeTreap.getRoot());
+            drawOnlyPriority(SplitTreap.getSecondTreap());
             count++;
-            let NewMerge = new TreapsForMerge();
-            if (MergeTreap.getRoot().x === width / 2) {  //обработать случай, когда  вершина имеет координаты .x == width / 2//
-                MergeTreap.getRoot().x = width / 4;
-                MergeTreap.setRoot(updateForMerge(MergeTreap.getRoot()));
-                drawNormalizationTreap(MergeTreap.getRoot());
-                count++;
-            }
-            NewMerge.setFirstTreap(MergeTreap.getRoot());
-            console.log(MergeTreap.getRoot())
-            NewMerge.setSecondTreap(SplitTreap.getSecondTreap());
-            NewMerge.drawTreapsForMerge();
-            NewMerge.mergeOurTreaps();
-            normalizationCoordinateForTreap(NewMerge.getRoot());
-            drawNormalizationTreap(NewMerge.getRoot());
-            this.root = NewMerge.getRoot()
+            root = merge(root, SplitTreap.getSecondTreap());
+            root.x = width / 2;
+            root.y = 50;
+            root = updateForMerge(root);
+            drawAnimationTreapInNewNode(root);
+            count++;
+            drawKeyAndPriority(root)
+            this.root = root;
         }
     }
 }
@@ -491,67 +483,81 @@ class RemoveNodeOfTreap {
         this.RemoveKey = key;
     }
 
-    //Нужно проработать случай когда самый левый элемент//
-
     RemoveTheNode() {
         let SplitTreap = new TreapForSplit();
         SplitTreap.setRoot(this.root);
         SplitTreap.drawOurTreapForSlip();
         SplitTreap.setKeyForSplit(this.RemoveKey);
         SplitTreap.splitOurTreap();
-        console.log(SplitTreap.getFirstTreap());
         if (SplitTreap.getFirstTreap() == null) {
-            drawTreapForSplit(SplitTreap.getSecondTreap())
+            drawOnlyKey(SplitTreap.getSecondTreap())
             count++;
             let [left, right] = Split(SplitTreap.getSecondTreap(), this.RemoveKey + 1);
             deleteFullOurTreap(left);
             if (right != null) {
                 right.loc = 'root';
                 right.parent = null;
+                right.x = width / 2;
+                right.y = 50;
                 right = updateForMerge(right);
-                drawOurMergesTreap(right);
+                drawAnimationTreapInNewNode(right);
                 count++;
-                normalizationCoordinateForTreap(right);
-                drawNormalizationTreap(right);
+                drawKeyAndPriority(right);
                 count++;
                 this.root = right;
             }
             return;
         } else if (SplitTreap.getSecondTreap() == null) {
             this.root = SplitTreap.getFirstTreap();
-            console.log('!!!DONE!!!')
             return;
         }
-        let SplitTheLagestNode = new TreapForSplit();
-        SplitTheLagestNode.setKeyForSplit(this.RemoveKey + 1);
-        SplitTheLagestNode.setRoot(SplitTreap.getSecondTreap());
-        updateCoordinateForNewCoordinateOfOurSplitTreap(SplitTreap.getFirstTreap(),
-            (width / 4) - SplitTreap.getFirstTreap().x,
-            50 - SplitTreap.getFirstTreap().y);
-        updateCoordinateForNewCoordinateOfOurSplitTreap(SplitTreap.getSecondTreap(),
-            3 * (width / 4) - SplitTreap.getSecondTreap().x,
-            50 - SplitTreap.getSecondTreap().y);
-        drawOurSplitTreap(SplitTreap.getSecondTreap());
+        drawOnlyKey(SplitTreap.getSecondTreap());
+        count++;
         let [left, right] = Split(SplitTreap.getSecondTreap(), this.RemoveKey + 1);
         deleteFullOurTreap(left);
         if (right != null) {
-            right.parent = null;
             right.loc = 'root';
-            right.x = (3 * width) / 4;
+            right.parent = null;
+            right.x = 3 * width / 4;
             right.y = 50;
-            count++;
             right = updateForMerge(right);
-            drawOurSplitTreap(right);
+            drawAnimationTreapInNewNode(right);
             count++;
+            let Merge = new TreapsForMerge();
+            Merge.setFirstTreap(SplitTreap.getFirstTreap());
+            Merge.setSecondTreap(right);
+            Merge.mergeOurTreaps();
+            this.root = Merge.getRoot();
         }
-        let NewTreap = new TreapsForMerge();
-        NewTreap.setFirstTreap(SplitTreap.getFirstTreap());
-        NewTreap.setSecondTreap(right);
-        NewTreap.mergeOurTreaps();
-        normalizationCoordinateForTreap(NewTreap.getRoot());
-        drawNormalizationTreap(NewTreap.getRoot());
-        count++;
-        this.root = NewTreap.getRoot();
+    }
+}
+
+function Split(root, key) {
+    if (root == null) {
+        drawPassForSplit(root);
+        return [null, null];
+    } else if (root.key < key) {
+        drawPassForSplit(root);
+        drawComparisonForSplit(root, key)
+        let [left, right] = this.Split(root.right, key);
+        changeLineBetweenTwoNode(root, root.right, left);
+        root.right = left;
+        if (root.right != null) {
+            root.right.loc = 'right';
+            root.right.parent = root;
+        }
+        return [root, right];
+    } else {
+        drawPassForSplit(root);
+        drawComparisonForSplit(root, key);
+        let [left, right] = this.Split(root.left, key);
+        changeLineBetweenTwoNode(root, root.left, right);
+        root.left = right;
+        if (root.left != null) {
+            root.left.loc = 'left';
+            root.left.parent = root;
+        }
+        return [left, root];
     }
 }
 
@@ -673,7 +679,7 @@ class randomTreap {
 
     drawTreap() {
         this.root = update(this.root);
-        drawRandomTreap(this.root);
+        drawAllTreap(this.root, 0);
     }
 }
 

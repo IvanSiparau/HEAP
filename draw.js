@@ -1,10 +1,165 @@
-function drawAnimationNewRootOnnewCoordinate(root, time_) {
+function drawAnimationNewRootOnnewCoordinate(root, time_, count_) {
     const circle = svg.selectAll('.' + getNameOfClassNode(root));
     circle.transition()
         .duration(time_)
         .attr('cx', root.x)
         .attr('cy', root.y)
+        .delay(time_ * count_);
+}
+
+function drawNewNode(root, time_, count_) {
+    const circle = svg.append('circle')
+        .attr('cx', root.x)
+        .attr('cy', root.y)
+        .attr('r', 0)
+        .attr('class', getNameOfClassNode(root))
+        .attr('fill', colorOfNode);
+    circle.transition()
+        .duration(time_)
+        .attr('r', radius)
+        .delay(count_ * time_);
+}
+
+function drawNewTextOfNode(root, time_, count_) {
+    const textOfNode = svg.append('text')
+        .attr('x', root.x - radius + 1)
+        .attr('y', root.y + 2)
+        .attr('class', getNameOfClassText(root))
+        .text(getNameOfNode(root))
+        .style('opacity', 0);
+    textOfNode.transition()
+        .duration(time_)
+        .style('opacity', 1)
+        .delay(time_ * count_);
+}
+
+function drawAnimationLineOnNewCoordinates(root1, root2, count_, time_) {
+    const line = svg.selectAll('.' + getNameOfClassBetweenTwoNode(root1, root2));
+    line.transition()
+        .duration(time_)
+        .attr('x1', root1.x)
+        .attr('y1', root1.y)
+        .attr('x2', root2.x)
+        .attr('y2', root2.y)
+        .delay(time_ * count_);
+}
+
+function drawNewLineBetweenTwoNode(root1, root2, count_, time_) {
+    const line = svg.append('line')
+        .attr('x1', root1.x)
+        .attr('y1', root1.y)
+        .attr('x2', root1.x)
+        .attr('y2', root1.y)
+        .attr('class', getNameOfClassBetweenTwoNode(root1, root2))
+        .attr("stroke", colorOfNode)
+        .attr("stroke-opacity", 0.5)
+        .attr("stroke-width", 4);
+    line.transition()
+        .duration(time_)
+        .attr('x2', root2.x)
+        .attr('y2', root2.y)
         .delay(time * count);
+}
+
+function drawRemoveLineBetweenTwoNode(root1, root2, time_, count_) {
+    const line = svg.selectAll('.' + getNameOfClassBetweenTwoNode(root1, root2));
+    line.transition()
+        .duration(time_)
+        .attr('x2', root1.x)
+        .attr('y2', root1.y)
+        .style('opacity', 0)
+        .remove()
+        .delay(time_ * count_);
+}
+
+function AnimationTextOnNewCoordinate(root, time_, count_) {
+    const text = svg.selectAll('.' + getNameOfClassText(root));
+    text.transition()
+        .duration(time_)
+        .attr('x', root.x - radius + 1)
+        .attr('y', root.y + 2)
+        .delay(time_ * count_);
+}
+
+function drawAnimationPassOnNewCoordinate(nameOfPass, x, y, time_, count_) {
+    const pass = svg.selectAll('.' + nameOfPass);
+    pass.transition()
+        .duration(time_)
+        .attr('cx', x)
+        .attr('cy', y)
+        .delay(time_ * count_);
+}
+
+function createNewPass(nameOfPass, x, y, time_, count_) {
+    const pass = svg.append('circle')
+        .attr('cx', x)
+        .attr('cy', y)
+        .attr('r', radius + 1)
+        .attr('fill', 'none')
+        .attr('stroke', colorOfPass)
+        .attr('class', nameOfPass)
+        .attr('stroke-width', 0);
+    pass.transition()
+        .duration(time_)
+        .attr('stroke-width', 4)
+        .delay(time_ * count_);
+}
+
+function removeThePass(nameOfPass, time_, count_) {
+    const pass = svg.selectAll('.' + nameOfPass);
+    pass.transition()
+        .duration(time_)
+        .attr("stroke-width", 0)
+        .remove()
+        .delay(time_ * count_);
+
+}
+
+function drawChangeTextOfNode(root, x, y, newText, time_, count_) {
+    const text = svg.selectAll('.' + getNameOfClassText(root));
+    text.transition()
+        .duration(time_)
+        .attr('x', x)
+        .attr('y', y)
+        .text(newText)
+        .delay(time_ * count_);
+}
+
+function drawOnlyKey(root) {
+    if (root != null) {
+        drawChangeTextOfNode(root, root.x, root.y, root.key, time, count);
+        drawOnlyKey(root.left);
+        drawOnlyKey(root.right);
+    }
+}
+
+function drawOnlyPriority(root) {
+    if (root != null) {
+        drawChangeTextOfNode(root, root.x, root.y, root.priority, time, count);
+        drawOnlyPriority(root.left);
+        drawOnlyPriority(root.right);
+    }
+}
+
+function drawKeyAndPriority(root) {
+    if (root != null) {
+        drawChangeTextOfNode(root, root.x - radius + 1, root.y + 2, getNameOfNode(root), time, count);
+        drawKeyAndPriority(root.left);
+        drawKeyAndPriority(root.right);
+    }
+}
+
+
+function drawAllTreap(root, time_) {
+    if (root != null) {
+        drawNewNode(root, time_, count);
+        drawNewTextOfNode(root, time_, count);
+        if (root.parent != null) {
+            drawNewLineBetweenTwoNode(root.parent, root, count, time_);
+        }
+        drawAllTreap(root.right, time_);
+        drawAllTreap(root.left, time_);
+    }
 }
 
 function getNameOfClassText(node) {
@@ -22,126 +177,64 @@ function getNameOfClassBetweenTwoNode(firstNode, secondNode) {
 }
 
 function drawFirstNode(node) {
-    const circle = svg.append("circle")
-        .attr("cx", node.x)
-        .attr("cy", node.y)
-        .attr('class', getNameOfClassNode(node))
-        .attr('r', 0)
-        .attr("fill", colorOfText);
-    circle.transition()
-        .duration(time)
-        .attr("r", radius)
-        .delay(time * count)
-        .style("fill", colorOfNode);
-    var textOfFirstNode = svg.append('text')
-        .attr('x', node.x - radius + 1)
-        .attr('y', node.y + 2)
-        .attr('fill', colorOfText)
-        .attr('class', getNameOfClassText(node))
-        .text(getNameOfNode(node))
-        .style('opacity', 0);
-    textOfFirstNode.transition()
-        .duration(time)
-        .style('opacity', 1)
+    drawNewNode(node, time, count);
+    drawNewTextOfNode(node, time, count);
+    count++;
+}
+
+function drawTextNearNode(str, isNew, x, y, time, count) {
+    if (isNew) {
+        text = svg.append('text')
+            .attr('x', x)
+            .attr('y', y)
+            .attr("class", 'comparison')
+            .text(str)
+            .style('opacity', 0);
+        text.transition()
+            .duration(0)
+            .style("opacity", 1)
+            .delay(time * count);
+    } else {
+        text = svg.selectAll('.comparison');
+        text.transition()
+            .duration(0)
+            .text(str)
+            .delay(time * count);
+    }
+}
+
+function removeComparison() {
+    svg.selectAll('.comparison')
+        .transition()
+        .duration(0)
+        .remove()
+        .style('opacity', 0)
         .delay(time * count);
-    count++;
 }
 
-
-function drawNewAddedNode(node, lastNode) {
-    const circle = svg.append("circle")
-        .attr("cx", 50)
-        .attr("cy", 400)
-        .attr('class', getNameOfClassNode(node))
-        .attr('r', 0)
-        .attr("fill", colorOfText);
-    circle.transition()
-        .duration(time)
-        .attr("r", radius)
-        .delay(time * count)
-        .style("fill", colorOfNode);
-    count++;
-}
 
 function drawUpdate(root, node) {
     if (root != null) {
-        drawAnimationNewRootOnnewCoordinate(root, time);
-        var textOfNode = svg.selectAll("." + getNameOfClassText(root));
-        textOfNode.transition()
-            .duration(time)
-            .attr('x', root.x - radius + 1)
-            .attr('y', root.y + 2)
-            .delay(time * count);
+        drawAnimationNewRootOnnewCoordinate(root, time, count);
+        AnimationTextOnNewCoordinate(root, time, count);
         if (root.left != null) {
-            d3.selectAll("." + getNameOfClassBetweenTwoNode(root, root.left))
-                .transition()
-                .duration(time)
-                .attr('x1', root.x)
-                .attr('y1', root.y)
-                .attr('x2', root.left.x)
-                .attr('y2', root.left.y)
-                .delay(time * count);
+            drawAnimationLineOnNewCoordinates(root, root.left, count, time);
         }
         if (root.right != null) {
-            d3.selectAll("." + getNameOfClassBetweenTwoNode(root, root.right))
-                .transition()
-                .duration(time)
-                .attr('x1', root.x)
-                .attr('y1', root.y)
-                .attr('x2', root.right.x)
-                .attr('y2', root.right.y)
-                .delay(time * count);
+            drawAnimationLineOnNewCoordinates(root, root.right, count, time);
         }
         if ((root.key == node.key && root.priority == node.priority)) {
-            const circle = svg.append("circle")
-                .attr("cx", root.x)
-                .attr("cy", root.y)
-                .attr('class', getNameOfClassNode(node))
-                .attr('r', 0)
-                .attr("fill", "none");
-            circle.transition()
-                .duration(time)
-                .attr("r", radius)
-                .delay(time * count)
-                .style("fill", colorOfNode);
-            var textOfNewAddedtNode = svg.append('text')
-                .attr('x', node.x - radius + 1)
-                .attr('y', node.y + 2)
-                .attr('fill', colorOfText)
-                .attr('class', getNameOfClassText(node))
-                .text(String(node.key) + "," + String(node.priority))
-                .style('opacity', 0);
-            textOfNewAddedtNode.transition()
-                .duration(time)
-                .style('opacity', 1)
-                .delay(time * count);
+            drawNewNode(root, time, count);
+            drawNewTextOfNode(root, time, count);
             if (root.loc === "root") {
                 if (root.left != null) {
-                    var ourPass = svg.selectAll(".passOfNode");
-                    ourPass.transition()
-                        .duration(time)
-                        .attr("cx", root.left.x)
-                        .attr("cy", root.left.y)
-                        .delay(time * count);
+                    drawAnimationPassOnNewCoordinate('passOfNode', root.left.x, root.left.y, time, count);
                 }
             } else {
-                var ourPass = svg.selectAll(".passOfNode");
-                ourPass.transition()
-                    .duration(time)
-                    .attr("cx", root.parent.x)
-                    .attr("cy", root.parent.y)
-                    .delay(time * count);
+                drawAnimationPassOnNewCoordinate('passOfNode', root.parent.x, root.parent.y, time, count);
             }
             if (root.parent != null && root.left != null) {
-                d3.selectAll("." + getNameOfClassBetweenTwoNode(root.parent, root.left))
-                    .transition()
-                    .duration(time)
-                    .attr('x1', root.parent.x)
-                    .attr('y1', root.parent.y)
-                    .attr('x2', root.left.x)
-                    .attr('y2', root.left.y)
-                    .remove()
-                    .delay(time * count);
+                drawAnimationLineOnNewCoordinates(root.parent, root.left, count, time);
             }
         }
         drawUpdate(root.left, node);
@@ -151,67 +244,18 @@ function drawUpdate(root, node) {
 
 function drawNewLineBetweenOurHeapAndNewNode(node, lastNode, modes, lastSection) {
     if (modes === newAddedNodeBeginRootOfHeap) {
-        var x1 = node.x, y1 = node.y;
-        var x2 = node.left.x, y2 = node.left.y;
-        var line = svg.append("line")
-            .attr("x1", x1)
-            .attr("y1", y1)
-            .attr("x2", x1)
-            .attr("y2", y1)
-            .attr('class', getNameOfClassBetweenTwoNode(node, node.left))
-            .attr("stroke", colorOfNode)
-            .attr("stroke-opacity", 0.5)
-            .attr("stroke-width", 4);
-        line.transition()
-            .duration(time)
-            .delay(time * count)
-            .attr("x2", x2)
-            .attr("y2", y2);
+        drawNewLineBetweenTwoNode(node, node.left, count, time);
     } else if (modes === newAddedNodeBeginTheRigthSonOfNode) {
-        var x2 = node.x, y2 = node.y;
-        var x1 = node.parent.x, y1 = node.parent.y;
-        var lineBetweenParentOfAddedNodeAndNode = svg.append("line")
-            .attr("x1", x1)
-            .attr("y1", y1)
-            .attr("x2", x1)
-            .attr("y2", y1)
-            .attr('class', getNameOfClassBetweenTwoNode(node.parent, node))
-            .attr("stroke", colorOfNode)
-            .attr("stroke-opacity", 0.5)
-            .attr("stroke-width", 4);
         changeColorOfSelector(lastSection, 'code12');
-        lineBetweenParentOfAddedNodeAndNode.transition()
-            .duration(time)
-            .delay(time * count)
-            .attr("x2", x2)
-            .attr("y2", y2);
+        drawNewLineBetweenTwoNode(node.parent, node, count, time);
         changeColorOfSelector('code12', 'code13');
         if (node.left != null) {
-            x1 = node.x, y1 = node.y, x2 = node.left.x, y2 = node.left.y;
-            var lineBetweenAddedNodeAndLeftSon = svg.append('line')
-                .attr("x1", x1)
-                .attr("y1", y1)
-                .attr("x2", x1)
-                .attr("y2", y1)
-                .attr('class', getNameOfClassBetweenTwoNode(node, node.left))
-                .attr("stroke", colorOfNode)
-                .attr("stroke-opacity", 0.5)
-                .attr("stroke-width", 4);
             changeColorOfSelector('code13', 'code14');
-            lineBetweenAddedNodeAndLeftSon.transition()
-                .duration(time)
-                .delay(time * count)
-                .attr("x2", x2)
-                .attr("y2", y2)
-            count++;
-            const removeLine = d3.selectAll("." + getNameOfClassBetweenTwoNode(node.parent, node.left));
             changeColorOfSelector('code14', 'code15');
-            removeLine.transition()
-                .duration(time)
-                .attr("x2", node.parent.x)
-                .attr("y2", node.parent.y)
-                .remove()
-                .delay(count * time);
+            count++;
+            drawNewLineBetweenTwoNode(node, node.left);
+            count++;
+            drawRemoveLineBetweenTwoNode(node.parent, node.left, time, count);
             count++;
             return 'code15'
         }
@@ -230,229 +274,51 @@ function getCircle(node) {
 }
 
 function drawFirstAddedNode(node) {
-    var newCircle = svg.append('circle')
-        .attr('cx', getCircle(node)[0])
-        .attr('cy', getCircle(node)[1])
-        .attr('r', radius + 1)
-        .attr('fill', 'none')
-        .attr('stroke', colorOfPass)
-        .attr('class', "passOfNode")
-        .attr('stroke-width', 0);
-    newCircle.transition()
-        .duration(time)
-        .attr('stroke-width', 4)
-        .delay(time * count);
-    count++;
-}
-
-function drawPassByLastAddedNode(node) {
-    var theLastPass = svg.selectAll(".passOfNode");
-    theLastPass.transition()
-        .duration(time)
-        .attr("cx", getCircle(node)[0])
-        .attr("cy", getCircle(node)[1])
-        .delay(time * count);
+    createNewPass('passOfNode', getCircle(node)[0], getCircle(node)[1], time, count);
     count++;
 }
 
 function drawPass(node) {
-    var theLastPass = svg.selectAll('.passOfNode');
-    theLastPass.transition()
-        .duration(time)
-        .attr("cx", getCircle(node)[0])
-        .attr("cy", getCircle(node)[1])
-        .delay(time * count);
+    drawAnimationPassOnNewCoordinate('passOfNode', getCircle(node)[0], getCircle(node)[1], time, count)
     count++;
 }
 
-function drawComparison(node, newNode) {
-    var comparison = svg.append('text')
-        .attr('x', node.x + radius + 5)
-        .attr('y', node.y)
-        .text(String(newNode.priority) + " ∨ " + String(node.priority))
-        .style('opacity', 0);
-    comparison.transition()
-        .duration(0)
-        .style("opacity", 1)
-        .delay(time * count);
+function drawComparison_(valueOfNode, value, x, y) {
+    let comparison = String(valueOfNode) + ' v ' + String(value);
+    drawTextNearNode(comparison, true, x, y, time, count);
     count++;
-    comparison.transition()
-        .duration(0)
-        .style('opacity', 0)
-        .remove()
-        .delay(count * time);
-    if (node.priority >= newNode.priority) {
-        var text = svg.append('text')
-            .attr('x', node.x + radius + 5)
-            .attr('y', node.y)
-            .text(String(newNode.priority) + " ⩽ " + String(node.priority))
-            .style('opacity', 0);
-        text.transition()
-            .duration(0)
-            .style("opacity", 1)
-            .delay(time * count);
-        count++;
-        text.transition()
-            .duration(time)
-            .style('opacity', 0)
-            .remove()
-            .delay(count * time);
-        count++;
+    if (valueOfNode >= value) {
+        comparison = String(valueOfNode) + ' ≥ ' + String(value);
     } else {
-        var otherText = svg.append('text')
-            .attr('x', node.x + radius + 5)
-            .attr('y', node.y)
-            .text(String(newNode.priority) + " > " + String(node.priority))
-            .style('opacity', 0);
-        otherText.transition()
-            .duration(0)
-            .style("opacity", 1)
-            .delay(time * count);
-        count++;
-        otherText.transition()
-            .duration(time)
-            .style('opacity', 0)
-            .remove()
-            .delay(count * time);
-        count++;
+        comparison = String(valueOfNode) + ' < ' + String(value);
     }
+    count++;
+    drawTextNearNode(comparison, false, x, y, time, count);
+    count++;
+    removeComparison();
 }
 
-function sendMessageAboutAddedNode(node) {
-    var text = svg.selectAll('.messageText');
-    text.transition()
-        .duration(0)
-        .text("Хотим добавить вершину (" + String(node.key) + "," +
-            String(node.priority) + ") двигаемся вверх по родителям, пока не найдем вершину с приоритетом меньше или не дойдем до корня")
-        .delay(time * count);
-    count++;
+function drawComparisonForBuild(node, newNode) {
+    drawComparison_(node.priority, newNode.priority, node.x + radius + 5, node.y);
 }
 
 function getNameOfNode(node) {
-    let i = 6 - (String(node.key).length + String(node.priority).length);
-    console.log(i);
-    let space = '';
-    for (let j = 0; j < i; ++j) {
-        space += '-';
-    }
     return String(node.key) + ', ' + String(node.priority);
 }
 
-function drawTreapForSplit(root) {
-    if (root != null) {
-        const circle = svg.append('circle')
-            .attr('cx', root.x)
-            .attr('cy', root.y)
-            .attr('r', 0)
-            .attr('class', getNameOfClassNode(root))
-            .attr('fill', colorOfNode);
-        circle.transition()
-            .duration(0)
-            .attr('r', radius)
-            .delay(count * time);
-        const textOfNode = svg.append('text')
-            .attr("x", root.x)
-            .attr('y', root.y)
-            .text(root.key)
-            .attr('class', getNameOfClassText(root))
-            .attr('fill', 'none')
-        textOfNode.transition()
-            .duration(0)
-            .attr('fill', colorOfText)
-            .delay(time * count);
-        if (root.parent != null) {
-            const line = svg.append('line')
-                .attr('x1', root.parent.x)
-                .attr('y1', root.parent.y)
-                .attr('x2', root.x)
-                .attr('y2', root.y)
-                .attr("stroke", colorOfNode)
-                .attr("class", getNameOfClassBetweenTwoNode(root.parent, root))
-                .attr("stroke-opacity", 0.5)
-                .attr("stroke-width", 0);
-            line.transition()
-                .duration(0)
-                .attr("stroke-width", 4)
-                .delay(time * count);
-        }
-        drawTreapForSplit(root.left);
-        drawTreapForSplit(root.right);
-    }
-}
-
-function delateOurTreap(root) {
-    if (root != null) {
-        const circle = svg.selectAll('.' + getNameOfClassNode(root));
-        circle.transition()
-            .duration(0)
-            .attr('fill', 'none')
-            .remove()
-            .delay(count * time);
-        const text = svg.selectAll('.' + getNameOfClassText(root));
-        text.transition()
-            .duration(0)
-            .attr("fill", "none")
-            .remove()
-            .delay(time * count);
-        if (root.parent != null) {
-            const line = svg.selectAll('.' + getNameOfClassBetweenTwoNode(root.parent, root));
-            line.transition()
-                .duration(0)
-                .style("stroke", "none")
-                .remove()
-                .delay(time * count);
-        }
-        delateOurTreap(root.left);
-        delateOurTreap(root.right);
-    }
-}
-
-/**/
 function delatePassAndMessage() {
-    const message = svg.selectAll('.messageText');
-    message.transition()
-        .duration(time)
-        .attr("fill", "none")
-        .remove()
-        .delay(time * count);
-    const pass = svg.selectAll(".passOfNode");
-    pass.transition()
-        .duration(time)
-        .attr("stroke-width", 0)
-        .remove()
-        .delay(time * count);
+    removeThePass('passOfNode', time, count);
 }
 
 function drawPassForSplit(root) {
     if (root != null && root.loc === 'root') {
-        const pass = svg.append('circle')
-            .attr('cx', root.x)
-            .attr('cy', root.y)
-            .attr('r', radius + 1)
-            .attr('fill', 'none')
-            .attr('stroke', colorOfPass)
-            .attr('class', "passForSplit")
-            .attr('stroke-width', 0);
-        pass.transition()
-            .duration(time)
-            .attr('stroke-width', 4)
-            .delay(time * count);
+        createNewPass('passForSplit', root.x, root.y, time, count);
         count++;
     } else if (root) {
-        const pass = svg.selectAll('.passForSplit');
-        pass.transition()
-            .duration(time)
-            .attr('cx', root.x)
-            .attr('cy', root.y)
-            .delay(time * count);
+        drawAnimationPassOnNewCoordinate('passForSplit', root.x, root.y, time, count);
         count++;
     } else {
-        const pass = svg.selectAll('.passForSplit');
-        pass.transition()
-            .duration(time)
-            .attr("stroke-width", 0)
-            .remove()
-            .delay(time * count);
+        removeThePass('passForSplit', time, count);
         count++;
     }
 }
@@ -465,31 +331,10 @@ function changeLineBetweenTwoNode(currentNode, oldConnection, newConnection) {
         .delay(time * count);
     count++;
     if (oldConnection != null && !IsNodeEque(oldConnection, newConnection)) {
-        d3.selectAll("." + getNameOfClassBetweenTwoNode(currentNode, oldConnection))
-            .transition()
-            .duration(time)
-            .attr("x2", currentNode.x)
-            .attr("y2", currentNode.y)
-            .style('opacity', 0)
-            .remove()
-            .style('opacity', 0)
-            .delay(time * count);
+        drawRemoveLineBetweenTwoNode(currentNode, oldConnection, time, count);
     }
     if (!IsNodeEque(oldConnection, newConnection) && newConnection != null) {
-        const newLine = svg.append('line')
-            .attr("x1", currentNode.x)
-            .attr("y1", currentNode.y)
-            .attr("x2", currentNode.x)
-            .attr("y2", currentNode.y)
-            .attr("stroke-opacity", 0.5)
-            .attr("stroke-width", 4)
-            .attr("stroke", colorOfNode)
-            .attr("class", getNameOfClassBetweenTwoNode(currentNode, newConnection));
-        newLine.transition()
-            .duration(time)
-            .attr('x2', newConnection.x)
-            .attr('y2', newConnection.y)
-            .delay(count * time);
+        drawNewLineBetweenTwoNode(currentNode, newConnection, time, count);
     }
     count++;
     circle.transition()
@@ -499,145 +344,32 @@ function changeLineBetweenTwoNode(currentNode, oldConnection, newConnection) {
     count++;
 }
 
-function drawOurSplitTreap(root) {
-    if (root != null) {
-        drawAnimationNewRootOnnewCoordinate(root, time);
-        const text = svg.selectAll('.' + getNameOfClassText(root));
-        text.transition()
-            .duration(2 * time)
-            .text(String(root.key) + ", " + String(root.priority))
-            .attr('x', root.x - radius + 2)
-            .attr('y', root.y)
-            .delay(time * count);
-
-        if (root.parent != null) {
-            const line = svg.selectAll('.' + getNameOfClassBetweenTwoNode(root.parent, root));
-            line.transition()
-                .duration(2 * time)
-                .attr('x1', root.parent.x)
-                .attr('y1', root.parent.y)
-                .attr('x2', root.x)
-                .attr('y2', root.y)
-                .delay(time * count)
-        }
-        drawOurSplitTreap(root.left);
-        drawOurSplitTreap(root.right);
-    }
-}
-
-function drawOneTreapForMerge(root) {
-    if (root != null) {
-        const text = svg.selectAll('.' + getNameOfClassText(root));
-        text.transition()
-            .duration(time)
-            .attr('x', root.x)
-            .attr('y', root.y)
-            .text(root.priority)
-            .delay(time * count);
-        drawOneTreapForMerge(root.left);
-        drawOneTreapForMerge(root.right);
-    }
-}
-
 function drawPassesForMerge(root1, root2) {
     if (root1 != null && root2 != null) {
         if (root1.loc === 'root' && root2.loc === 'root') {
-            const pass1 = svg.append('circle')
-                .attr('cx', root1.x)
-                .attr('cy', root1.y)
-                .attr('r', radius + 1)
-                .attr('fill', 'none')
-                .attr('stroke', colorOfPass)
-                .attr('class', "passForSplit1")
-                .attr('stroke-width', 0);
-            pass1.transition()
-                .duration(time)
-                .attr('stroke-width', 4)
-                .delay(time * count);
-            const pass2 = svg.append('circle')
-                .attr('cx', root2.x)
-                .attr('cy', root2.y)
-                .attr('r', radius + 1)
-                .attr('fill', 'none')
-                .attr('stroke', colorOfPass)
-                .attr('class', "passForSplit2")
-                .attr('stroke-width', 0);
-            pass2.transition()
-                .duration(time)
-                .attr('stroke-width', 4)
-                .delay(time * count);
+            createNewPass('passForSplit1', root1.x, root1.y, time, count);
+            createNewPass('passForSplit2', root2.x, root2.y, time, count);
             count++;
         } else {
-            const pass1 = svg.selectAll('.passForSplit1');
-            const pass2 = svg.selectAll('.passForSplit2');
-            pass1.transition()
-                .duration(time)
-                .attr('cx', root1.x)
-                .attr('cy', root1.y)
-                .delay(time * count);
-            pass2.transition()
-                .duration(time)
-                .attr('cx', root2.x)
-                .attr('cy', root2.y)
-                .delay(time * count);
+            drawAnimationPassOnNewCoordinate('passForSplit1', root1.x, root1.y, time, count);
+            drawAnimationPassOnNewCoordinate('passForSplit2', root2.x, root2.y, time, count);
             count++;
         }
     } else {
-        const pass1 = svg.selectAll('.passForSplit1');
-        const pass2 = svg.selectAll('.passForSplit2');
-        pass1.transition()
-            .duration(time)
-            .attr("stroke-width", 0)
-            .remove()
-            .delay(time * count)
-        pass2.transition()
-            .duration(time)
-            .attr("stroke-width", 0)
-            .remove()
-            .delay(time * count)
+        removeThePass('passForSplit1', time, count);
+        removeThePass('passForSplit2', time, count);
+        count++;
     }
 }
 
 function changeLineBetweenTwoNodeForMerge(currentNode, oldConnection, newConnection) {
-    /*changeLineBetweenTwoNode(currentNode, oldConnection, newConnection);*/
     if (newConnection != null && newConnection.parent != null && !IsNodeEque(newConnection, oldConnection)) {
-        svg.selectAll("." + getNameOfClassBetweenTwoNode(newConnection.parent, newConnection))
-            .transition()
-            .duration(time)
-            .attr("x2", newConnection.parent.x)
-            .attr("y2", newConnection.parent.y)
-            .style('opacity', 0)
-            .remove()
-            .delay(time * count);
+        drawRemoveLineBetweenTwoNode(newConnection.parent, newConnection, time, count);
         count++;
     }
     changeLineBetweenTwoNode(currentNode, oldConnection, newConnection);
 }
 
-function drawOurMergesTreap(root) {
-    if (root != null) {
-        drawAnimationNewRootOnnewCoordinate(root, time);
-        const text = svg.selectAll('.' + getNameOfClassText(root));
-        text.transition()
-            .duration(time)
-            .attr('x', root.x)
-            .attr('y', root.y)
-            .delay(time * count);
-
-        if (root.parent != null) {
-            const line = svg.selectAll('.' + getNameOfClassBetweenTwoNode(root.parent, root));
-            line.transition()
-                .duration(time)
-                .attr('x1', root.parent.x)
-                .attr('y1', root.parent.y)
-                .attr('x2', root.x)
-                .attr('y2', root.y)
-                .delay(time * count)
-        }
-        drawOurMergesTreap(root.left);
-        drawOurMergesTreap(root.right);
-    }
-}
 
 function deleteFullOurTreap(root) {
     if (root != null) {
@@ -666,78 +398,8 @@ function deleteFullOurTreap(root) {
     }
 }
 
-function drawNormalizationTreap(root) {
-    if (root != null) {
-        drawAnimationNewRootOnnewCoordinate(root, time);
-        const text = svg.selectAll('.' + getNameOfClassText(root));
-        text.transition()
-            .duration(time)
-            .text(String(root.key) + ", " + String(root.priority))
-            .attr('x', root.x - radius + 2)
-            .attr('y', root.y)
-            .delay(time * count);
-        if (root.parent != null) {
-            const line = svg.selectAll('.' + getNameOfClassBetweenTwoNode(root.parent, root));
-            line.transition()
-                .duration(time)
-                .attr("x1", root.parent.x)
-                .attr("y1", root.parent.y)
-                .attr("x2", root.x)
-                .attr("y2", root.y)
-                .delay(time * count);
-        }
-        drawNormalizationTreap(root.right);
-        drawNormalizationTreap(root.left);
-    }
-}
-
-function drawTextAboutKeyAndPriority(root) {
-    if (root != null) {
-        const text = svg.selectAll('.' + getNameOfClassText(root));
-        text.transition()
-            .duration(time)
-            .attr('x', root.x - radius + 1)
-            .attr('y', root.y + 2)
-            .attr('fill', colorOfText)
-            .text(getNameOfNode(root))
-            .delay(time * count)
-        drawTextAboutKeyAndPriority(root.left);
-        drawTextAboutKeyAndPriority(root.right);
-    }
-}
-
-function drawComparisonParameterOfRootWithValue(root, parametr, value) {
-    if (root != null) {
-        const text = svg.append('text')
-            .attr('x', root.x - radius - 5)
-            .attr('y', root.y - radius - 2)
-            .text(String(parametr) + " V " + String(value))
-            .style('opacity', 0);
-        text.transition()
-            .duration(0)
-            .style('opacity')
-            .delay(time * count);
-        count++;
-        if (parametr <= value) {
-            text.transition()
-                .duration(0)
-                .text(String(parametr) + " ⩽ " + String(value))
-                .delay(time * count);
-            count++;
-        } else {
-            text.transition()
-                .duration(0)
-                .text(String(parametr) + " > " + String(value))
-                .delay(time * count);
-            count++;
-        }
-        text.transition()
-            .delay(time)
-            .style('opacity', 0)
-            .remove()
-            .delay(time * count);
-        count++
-    }
+function drawComparisonForSplit(root, key) {
+    drawComparison_(root.key, key, root.x - radius - 5, root.y - radius - 2);
 }
 
 function changeColorOfSelector(lastSelector, newSelector) {
@@ -756,44 +418,14 @@ function changeColorOfSelector(lastSelector, newSelector) {
     count++;
 }
 
-function drawRandomTreap(root) {
+function drawAnimationTreapInNewNode(root) {
     if (root != null) {
-        const circle = svg.append('circle')
-            .attr('cx', root.x)
-            .attr('cy', root.y)
-            .attr('r', 0)
-            .attr('class', getNameOfClassNode(root))
-            .attr('fill', colorOfNode);
-        circle.transition()
-            .duration(0)
-            .attr('r', radius)
-            .delay(count * time);
-        const textOfNode = svg.append('text')
-            .attr("x", root.x - radius + 1)
-            .attr('y', root.y + 2)
-            .text(String(root.key) + ', ' + String(root.priority))
-            .attr('class', getNameOfClassText(root))
-            .attr('fill', 'none')
-        textOfNode.transition()
-            .duration(0)
-            .attr('fill', colorOfText)
-            .delay(time * count);
+        drawAnimationNewRootOnnewCoordinate(root, time, count);
+        AnimationTextOnNewCoordinate(root, time, count);
         if (root.parent != null) {
-            const line = svg.append('line')
-                .attr('x1', root.parent.x)
-                .attr('y1', root.parent.y)
-                .attr('x2', root.x)
-                .attr('y2', root.y)
-                .attr("stroke", colorOfNode)
-                .attr("class", getNameOfClassBetweenTwoNode(root.parent, root))
-                .attr("stroke-opacity", 0.5)
-                .attr("stroke-width", 0);
-            line.transition()
-                .duration(0)
-                .attr("stroke-width", 4)
-                .delay(time * count);
+            drawAnimationLineOnNewCoordinates(root.parent, root, count, time);
         }
-        drawRandomTreap(root.left);
-        drawRandomTreap(root.right);
+        drawAnimationTreapInNewNode(root.left);
+        drawAnimationTreapInNewNode(root.right);
     }
 }

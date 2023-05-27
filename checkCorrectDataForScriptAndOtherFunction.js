@@ -83,3 +83,48 @@ function sendMessageErrorForInsert(node) {
         return 'некорректный ввод';
     }
 }
+
+function getListsOfNodes(str) {
+    const regex = /\((\d+), (\d+)\)/g;
+    const matches = str.matchAll(regex);
+    const result = [];
+    const vertices = new Set();
+
+    for (const match of matches) {
+        const int1 = parseInt(match[1]);
+        const int2 = parseInt(match[2]);
+        const vertex = [int1, int2];
+
+        // Проверка на уникальность вершины
+        if (vertices.has(vertex.toString())) {
+            console.error('Вершины должны быть различными.');
+            return null;
+        }
+
+        vertices.add(vertex.toString());
+        result.push(vertex);
+    }
+
+    return result;
+}
+
+function checkCorrectDataForNode(str, root) {
+    if (str === '') {
+        return [false, 'введите вершины']
+    }
+    if (root != null) {
+        return [false, 'удалите дерево']
+    }
+    const regex = /^\(\d+, \d+\)( \(\d+, \d+\))*$/;
+
+    if (!regex.test(str)) {
+        return [false, 'некоректный ввод'];
+    }
+
+    const pairs = str.match(/\d+, \d+/g);
+    const uniquePairs = new Set(pairs);
+    if (pairs.length !== uniquePairs.size) {
+        return [false, 'все вершины должны быть уникальные'];
+    }
+    return [true];
+}

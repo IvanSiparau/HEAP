@@ -1,7 +1,6 @@
-//let root = null;
 let width = /*1700*/ 1800;
 let  heigth = 600;
-let time = 100;
+let time = 500;
 let count = 0;
 let radius = 24;
 const newAddedNodeBeginRootOfHeap = 1;

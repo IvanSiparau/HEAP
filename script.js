@@ -15,11 +15,12 @@ svg = d3.select(".ourHeap").append("svg")
     .attr("height", 600);
 
 buttonForBuildTreap.onclick = function () {
-    count = 0;
-    codeOfBuildTreap();
-    let ListOfNode = dataForBuildTreap.value;
     makeErrorMessageInvisible('build');
-    if (checkValidOfDataForBuildTreap(ListOfNode) && Treap.getRoot() == null) {
+    let ListOfNode = dataForBuildTreap.value;
+    count = 0;
+    let InformationAboutData = checkCorrectDataForNode(ListOfNode, Treap.getRoot());
+    if (InformationAboutData[0]) {
+        codeOfBuildTreap();
         dataForBuildTreap.value = '';
         disable();
         Treap = new BuildTreap();
@@ -29,7 +30,8 @@ buttonForBuildTreap.onclick = function () {
                     .attr("height", 500);*/
         //buildTreap([[0, 86], [2, 4], [1, 5], [2, 7], [2, 8], [3, 6], [3, 7], [3, 4], [5, 45], [1, 98], [23, 9], [4, 8], [5, 5], [6, 2], [4, 4], [7, 0], [98, 45], [98, 0]]);
         //let listOfNodes = [[14, 1], [16, 7], [18, 9], [3, 1], [2, 4], [8, 3], [9, 5], [7, 6], [5, 7], [4, 8]]
-        let listOfNodes = [[0, 86], [2, 4], [1, 5], [2, 7], [2, 8], [3, 6], [3, 7], [3, 4], [5, 45], [1, 98], [23, 9], [4, 8], [5, 5], [6, 2], [4, 4], [7, 0], [98, 45], [98, 0]]
+        let listOfNodes = getListsOfNodes(ListOfNode);
+        //let listOfNodes = [[0, 86], [2, 4], [1, 5], [2, 7], [2, 8], [3, 6], [3, 7], [3, 4], [5, 45], [1, 98], [23, 9], [4, 8], [5, 5], [6, 2], [4, 4], [7, 0], [98, 45], [98, 0]]
         listOfNodes = listOfNodes.sort(function (a, b) {
             if (a !== b) {
                 return a[0] - b[0];
@@ -40,17 +42,9 @@ buttonForBuildTreap.onclick = function () {
         Treap.setListOfNodes(listOfNodes);
         Treap.buildTreap();
         enable();
-    } else if (Treap.getRoot() !== null) {
+    } else {
         let errorMessage = document.querySelector('#build');
-        errorMessage.textContent = 'дерево уже построенно';
-        errorMessage.style.display = 'block';
-    } else if (ListOfNode === '') {
-        let errorMessage = document.querySelector('#build');
-        errorMessage.textContent = 'введите список вершин';
-        errorMessage.style.display = 'block';
-    } else if (!checkValidOfDataForBuildTreap(ListOfNode)) {
-        let errorMessage = document.querySelector('#build');
-        errorMessage.textContent = 'некорректый ввод';
+        errorMessage.textContent = InformationAboutData[1]
         errorMessage.style.display = 'block';
     }
 }
@@ -63,9 +57,7 @@ buttonForSplitTreap.onclick = function () {
     let node = nodeForSplit.value;
     if (Treap.getRoot() != null && node !== '' && !isNaN(Number(node))) {
         disable();
-        time = 1000;
         count = 0;
-        delateOurTreap(update(Treap.getRoot()));
         split = new TreapForSplit();
         split.setRoot(Treap.getRoot());
         split.drawOurTreapForSlip();
@@ -75,15 +67,11 @@ buttonForSplitTreap.onclick = function () {
         if (split.getFirstTreap() != null && split.getSecondTreap() != null) {
             MakeTheButtonsAfterTheSplitVisible();
         } else if (split.getFirstTreap() == null) {
-            normalizationCoordinateForTreap(split.getSecondTreap());
-            drawNormalizationTreap(split.getSecondTreap());
             Treap = new BuildTreap();
             Treap.setRoot(split.getSecondTreap());
             split = new TreapForSplit();
             enable();
         } else if (split.getSecondTreap() == null) {
-            normalizationCoordinateForTreap(split.getFirstTreap());
-            drawNormalizationTreap(split.getFirstTreap());
             Treap = new BuildTreap();
             Treap.setRoot(split.getFirstTreap());
             split = new TreapForSplit();
@@ -106,6 +94,7 @@ buttonForSplitTreap.onclick = function () {
 }
 
 buttonForMerge.onclick = function () {
+    codeOfMergeTreap();
     if (split.getFirstTreap() != null && split.getSecondTreap() != null) {
         disable();
         time = 1000;
@@ -126,12 +115,9 @@ buttonForMergeOurTreapAfterSplit.onclick = function () {
     let merge = new TreapsForMerge();
     merge.setFirstTreap(split.getFirstTreap());
     merge.setSecondTreap(split.getSecondTreap());
-    merge.drawTreapsForMerge();
     merge.mergeOurTreaps();
     enable();
     MakeTheButtonsAfterTheSplitInvisible();
-    normalizationCoordinateForTreap(merge.getRoot());
-    drawNormalizationTreap(merge.getRoot());
     Treap = new BuildTreap();
     Treap.setRoot(merge.getRoot());
     split = new TreapForSplit();
@@ -140,13 +126,15 @@ buttonForMergeOurTreapAfterSplit.onclick = function () {
 buttonForDeleteTheFirstTreapAfterSplit.onclick = function () {
     count = 0;
     deleteFullOurTreap(split.getFirstTreap());
-    normalizationCoordinateForTreap(split.getSecondTreap());
-    drawNormalizationTreap(split.getSecondTreap());
+    let RightTreap = split.getSecondTreap();
+    RightTreap.x = width / 2;
+    RightTreap.y = 50;
+    RightTreap = updateForMerge(RightTreap);
+    drawAnimationTreapInNewNode(RightTreap);
     MakeTheButtonsAfterTheSplitInvisible();
     enable();
     Treap = new BuildTreap();
-    Treap.setRoot(split.getSecondTreap());
-    //console.log(Treap.getRoot())
+    Treap.setRoot(RightTreap);
     split = new TreapForSplit();
 }
 
@@ -155,11 +143,14 @@ buttonForDeleteTheSecondTreapAfterSplit.onclick = function () {
     count = 0;
     MakeTheButtonsAfterTheSplitInvisible();
     deleteFullOurTreap(split.getSecondTreap());
-    normalizationCoordinateForTreap(split.getFirstTreap());
-    drawNormalizationTreap(split.getFirstTreap());
+    let LeftTreap = split.getFirstTreap();
+    LeftTreap.x = width / 2;
+    LeftTreap.y = 50;
+    LeftTreap = updateForMerge(LeftTreap);
+    drawAnimationTreapInNewNode(LeftTreap);
     enable();
     Treap = new BuildTreap();
-    Treap.setRoot(split.getFirstTreap());
+    Treap.setRoot(LeftTreap);
     split = new TreapForSplit();
 }
 
