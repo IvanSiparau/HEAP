@@ -15,19 +15,17 @@ svg = d3.select(".ourHeap").append("svg")
     .attr("height", 600);
 
 buttonForBuildTreap.onclick = function () {
-    makeErrorMessageInvisible('build');
     let ListOfNode = dataForBuildTreap.value;
     count = 0;
     let InformationAboutData = checkCorrectDataForNode(ListOfNode, Treap.getRoot());
     if (InformationAboutData[0]) {
+        makeErrorMessageInvisible('build');
+        deleteCode();
         codeOfBuildTreap();
         dataForBuildTreap.value = '';
         disable();
         Treap = new BuildTreap();
         count = 0;
-        /*        svg = d3.select(".ourHeap").append("svg")
-                    .attr("width", width)
-                    .attr("height", 500);*/
         //buildTreap([[0, 86], [2, 4], [1, 5], [2, 7], [2, 8], [3, 6], [3, 7], [3, 4], [5, 45], [1, 98], [23, 9], [4, 8], [5, 5], [6, 2], [4, 4], [7, 0], [98, 45], [98, 0]]);
         //let listOfNodes = [[14, 1], [16, 7], [18, 9], [3, 1], [2, 4], [8, 3], [9, 5], [7, 6], [5, 7], [4, 8]]
         let listOfNodes = getListsOfNodes(ListOfNode);
@@ -39,7 +37,7 @@ buttonForBuildTreap.onclick = function () {
                 return a[1] - b[1];
             }
         });
-        Treap.setListOfNodes(listOfNodes);
+        Treap.setListOfNode(listOfNodes);
         Treap.buildTreap();
         enable();
     } else {
@@ -52,16 +50,17 @@ buttonForBuildTreap.onclick = function () {
 let buttonForSplitTreap = document.querySelector('.buttonForSplitOurTreap');
 
 buttonForSplitTreap.onclick = function () {
-    codeOfSplitTreap();
-    makeErrorMessageInvisible('split');
     let node = nodeForSplit.value;
     if (Treap.getRoot() != null && node !== '' && !isNaN(Number(node))) {
+        deleteCode();
+        codeOfSplitTreap();
+        makeErrorMessageInvisible('split');
         disable();
         count = 0;
         split = new TreapForSplit();
         split.setRoot(Treap.getRoot());
         split.drawOurTreapForSlip();
-        split.setKeyForSplit(Number(nodeForSplit.value));
+        split.setNode(Number(nodeForSplit.value));
         nodeForSplit.value = '';
         split.splitOurTreap();
         if (split.getFirstTreap() != null && split.getSecondTreap() != null) {
@@ -94,23 +93,52 @@ buttonForSplitTreap.onclick = function () {
 }
 
 buttonForMerge.onclick = function () {
-    codeOfMergeTreap();
-    if (split.getFirstTreap() != null && split.getSecondTreap() != null) {
+    let NodeForMergeTreap = newTrepsForMerge.value;
+    let Information = checkCorrectDataForMerge(NodeForMergeTreap, Treap.getListOfNodes());
+    if (Information[0]) {
         disable();
-        time = 1000;
+        deleteCode();
+        makeErrorMessageInvisible();
+        codeOfMergeTreap();
+        let copyTime = time;
+        time = 0;
+        let newTreap = new BuildTreap();
+        newTreap.setListOfNode(Information[1]);
+        newTreap.buildTreap();
+        let left, right;
+        if (Information[2] === 'old') {
+            left = newTreap.getRoot();
+             right = Treap.getRoot();
+        } else {
+            right = newTreap.getRoot();
+            left = Treap.getRoot();
+        }
+        left.x = width / 4;
+        left.y = 50;
+        right.x = 3 * width / 4;
+        right.y = 50;
+        updateForMerge(left);
+        updateForMerge(right);
+        drawAnimationTreapInNewNode(left);
+        drawAnimationTreapInNewNode(right)
+        let mergeTreap = new TreapsForMerge();
+        mergeTreap.setFirstTreap(left);
+        mergeTreap.setSecondTreap(right);
         count = 0;
-        let merge = new TreapsForMerge();
-        merge.setFirstTreap(split.getFirstTreap());
-        merge.setSecondTreap(split.getSecondTreap());
-        merge.drawTreapsForMerge();
-        merge.mergeOurTreaps();
+        time = copyTime;
+        mergeTreap.mergeOurTreaps();
         enable();
+    } else {
+        let errorMessage = document.querySelector('#merge');
+        errorMessage.textContent = Information[1];
+        errorMessage.style.display = 'block';
     }
 }
 
 buttonForMergeOurTreapAfterSplit.onclick = function () {
     time = 500;
     count = 0;
+    deleteCode();
     MakeTheButtonsAfterTheSplitInvisible();
     let merge = new TreapsForMerge();
     merge.setFirstTreap(split.getFirstTreap());
@@ -125,6 +153,7 @@ buttonForMergeOurTreapAfterSplit.onclick = function () {
 
 buttonForDeleteTheFirstTreapAfterSplit.onclick = function () {
     count = 0;
+    deleteCode();
     deleteFullOurTreap(split.getFirstTreap());
     let RightTreap = split.getSecondTreap();
     RightTreap.x = width / 2;
@@ -141,6 +170,7 @@ buttonForDeleteTheFirstTreapAfterSplit.onclick = function () {
 
 buttonForDeleteTheSecondTreapAfterSplit.onclick = function () {
     count = 0;
+    deleteCode();
     MakeTheButtonsAfterTheSplitInvisible();
     deleteFullOurTreap(split.getSecondTreap());
     let LeftTreap = split.getFirstTreap();
@@ -156,6 +186,7 @@ buttonForDeleteTheSecondTreapAfterSplit.onclick = function () {
 
 buttonForDeleteAll.onclick = function () {
     count = 0;
+    deleteCode();
     svg.selectAll("*").remove();
     Treap = new BuildTreap();
     MakeTheButtonsAfterTheSplitInvisible();
@@ -170,6 +201,7 @@ buttonForInsert.onclick = function () {
     let node = DataOfNewAddedNode.value;
     if (checkCorrectDataForInsert(node)) {
         disable();
+        deleteCode();
         count = 0;
         time = 500;
         let Insert = new AddedNodeToOurTreap();
@@ -197,6 +229,7 @@ buttonForRemove.onclick = function () {
     let key = DataOfRemoveNode.value;
     if (Treap.getRoot() != null && !isNaN(Number(key)) && key !== '') {
         disable()
+        deleteCode();
         count = 0;
         time = 500;
         let Remove = new RemoveNodeOfTreap();
@@ -227,11 +260,14 @@ let BuildRandomTreap = document.querySelector('.buttonForBuildRandomTreap');
 BuildRandomTreap.onclick = function () {
     count = 0;
     svg.selectAll("*").remove();
-    let randomTreap_ = new randomTreap();
-    randomTreap_.buildTreap();
-    randomTreap_.drawTreap();
+    deleteCode();
+    let copyTime = time;
+    time = 0;
+    let listOfNodes = new RandomTupleGenerator(0, 99, 9).generateRandomTuples();
     Treap = new BuildTreap();
-    Treap.setRoot(update(randomTreap_.getRoot()));
+    Treap.setListOfNode(listOfNodes);
+    Treap.buildTreap();
+    time = copyTime;
 }
 
 

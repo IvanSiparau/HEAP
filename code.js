@@ -1,6 +1,5 @@
 function deleteCode() {
-    let codeOfBuild = document.getElementById('code');
-    codeOfBuild.removeChild('.code');
+    let codeOfBuild = d3.selectAll('code').remove();
 }
 
 function createCode(code_) {

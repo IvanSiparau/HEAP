@@ -8,7 +8,4 @@ const newAddedNodeBeginTheRigthSonOfNode = 2;
 let  mode;
 const colorOfNode = '#e7adad';
 const colorOfPass = '#960000';
-const colorOfText = 'black';
 let svg;
-const leftLocationForSplit = 'left';
-const rightLocationForSplit = 'right';

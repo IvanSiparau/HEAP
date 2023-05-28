@@ -8,35 +8,51 @@ class Node {
     }
 }
 
-class BuildTreap {
+
+class BasicClassForNode {
     constructor() {
         this.root = null;
-        this.time = time;
         this.lastNode = null;
-        this.count = 0;
-        this.lastSetion = '';
+        this.lastSetion = 0;
         this.listOfNodes = null;
-    }
-
-    getTime() {
-        return this.time;
-    }
-
-    getCount() {
-        return this.time;
-    }
-
-    setListOfNodes(nodes) {
-        this.listOfNodes = nodes;
+        this.node = null;
     }
 
     getRoot() {
-        return this.root;
+        return getRoot(this.root);
     }
 
     setRoot(root) {
         this.root = root;
     }
+
+    setListOfNode(nodes) {
+        this.listOfNodes = nodes;
+    }
+
+    setNode(node) {
+        this.node = node;
+    }
+
+    buildListOfNode(root) {
+        if (root != null) {
+            let node = [root.key, root.priority];
+            this.listOfNodes.push(node);
+            this.buildListOfNode(root.left);
+            this.buildListOfNode(root.right);
+        }
+    }
+
+    getListOfNodes() {
+        this.listOfNodes = [];
+        this.buildListOfNode(getRoot(this.root));
+        return this.listOfNodes;
+    }
+
+}
+
+
+class BuildTreap extends BasicClassForNode {
 
     insertNode(node) {
         if (this.lastNode == null) {
@@ -139,30 +155,11 @@ class BuildTreap {
 }
 
 
-class TreapForSplit {
-    constructor() {
-        this.root = null;
-        this.keyForSplit = null;
-        this.firstTreap = null;
-        this.secondTreap = null;
-        this.lastSection = 0;
-    }
-
-    setKeyForSplit(key) {
-        this.keyForSplit = key;
-    }
-
-    setRoot(otherRoot) {
-        this.root = update(otherRoot);
-    }
+class TreapForSplit extends BasicClassForNode {
 
     drawOurTreapForSlip() {
         drawOnlyKey(this.root);
         count++;
-    }
-
-    getRoot() {
-        return this.root;
     }
 
     getFirstTreap() {
@@ -233,7 +230,7 @@ class TreapForSplit {
     }
 
     splitOurTreap() {
-        const [left, right] = this.Split(this.root, this.keyForSplit);
+        const [left, right] = this.Split(this.root, this.node);
         if (left != null) {
             this.firstTreap = left;
             this.firstTreap.loc = 'root';
@@ -260,20 +257,7 @@ class TreapForSplit {
 
 }
 
-class TreapsForMerge {
-    constructor() {
-        this.root = null;
-        this.firstTreap = null;
-        this.secondTreap = null;
-    }
-
-    setRoot(root) {
-        this.root = root;
-    }
-
-    getRoot() {
-        return this.root;
-    }
+class TreapsForMerge extends BasicClassForNode {
 
     setFirstTreap(treap) {
         this.firstTreap = treap;
@@ -388,7 +372,7 @@ class AddedNodeToOurTreap {
             let SplitTreap = new TreapForSplit();
             SplitTreap.setRoot(this.root);
             SplitTreap.drawOurTreapForSlip();
-            SplitTreap.setKeyForSplit(this.addedNode[0]);
+            SplitTreap.setNode(this.addedNode[0]);
             SplitTreap.splitOurTreap();
             if (SplitTreap.getSecondTreap() == null) {
                 let root = SplitTreap.getFirstTreap();
@@ -416,7 +400,7 @@ class AddedNodeToOurTreap {
                 return;
             } else if (SplitTreap.getFirstTreap() == null) {
                 let root = SplitTreap.getSecondTreap();
-                root.x  = 3 * width / 4;
+                root.x = 3 * width / 4;
                 root.y = 50;
                 root = updateForMerge(root);
                 drawAnimationTreapInNewNode(root);
@@ -465,34 +449,17 @@ class AddedNodeToOurTreap {
     }
 }
 
-class RemoveNodeOfTreap {
-    constructor() {
-        this.root = null;
-        this.RemoveKey = null;
-    }
-
-    setRoot(root) {
-        this.root = root;
-    }
-
-    getRoot() {
-        return this.root;
-    }
-
-    setNode(key) {
-        this.RemoveKey = key;
-    }
-
+class RemoveNodeOfTreap extends BasicClassForNode {
     RemoveTheNode() {
         let SplitTreap = new TreapForSplit();
         SplitTreap.setRoot(this.root);
         SplitTreap.drawOurTreapForSlip();
-        SplitTreap.setKeyForSplit(this.RemoveKey);
+        SplitTreap.setNode(this.node);
         SplitTreap.splitOurTreap();
         if (SplitTreap.getFirstTreap() == null) {
             drawOnlyKey(SplitTreap.getSecondTreap())
             count++;
-            let [left, right] = Split(SplitTreap.getSecondTreap(), this.RemoveKey + 1);
+            let [left, right] = Split(SplitTreap.getSecondTreap(), this.node + 1);
             deleteFullOurTreap(left);
             if (right != null) {
                 right.loc = 'root';
@@ -513,7 +480,7 @@ class RemoveNodeOfTreap {
         }
         drawOnlyKey(SplitTreap.getSecondTreap());
         count++;
-        let [left, right] = Split(SplitTreap.getSecondTreap(), this.RemoveKey + 1);
+        let [left, right] = Split(SplitTreap.getSecondTreap(), this.node + 1);
         deleteFullOurTreap(left);
         if (right != null) {
             right.loc = 'root';
@@ -570,12 +537,18 @@ class RandomTupleGenerator {
     }
 
     generateRandomTuples() {
-        const result = [];
+        let result = [];
         for (let i = 0; i < this.count; i++) {
             const tuple = this.generateUniqueTuple();
             result.push(tuple);
         }
-
+        result = result.sort(function (a, b) {
+            if (a !== b) {
+                return a[0] - b[0];
+            } else {
+                return a[1] - b[1];
+            }
+        });
         return result;
     }
 
@@ -610,76 +583,3 @@ class RandomTupleGenerator {
         return Math.floor(Math.random() * (this.max - this.min + 1)) + this.min;
     }
 }
-
-class randomTreap {
-    constructor() {
-        this.root = null;
-        this.listOfNode = new RandomTupleGenerator(0, 99, 9).generateRandomTuples();
-        this.lastNode = null;
-    }
-
-    getRoot() {
-        return this.root;
-    }
-
-    insertNode(node) {
-        if (this.lastNode == null) {
-            node.loc = "root";
-            node.left = null;
-            node.right = null;
-            node.height = 1;
-            this.root = node;
-            return;
-        }
-        while ((this.lastNode.parent != null) && (node.priority < this.lastNode.priority)) {
-            this.lastNode = this.lastNode.parent;
-        }
-        if ((this.lastNode.parent == null) && ((node.priority < this.lastNode.priority))) {
-            node.loc = "root";
-            node.parent = null;
-            node.left = this.lastNode;
-            node.left.parent = node;
-            node.left.loc = "left";
-            node.height = getHeigth(this.lastNode) + 1;
-            this.root = node;
-            return;
-        } else {
-            if (this.lastNode.right != null) {
-                this.lastNode.right.parent = node;
-                node.left = this.lastNode.right;
-            }
-            this.lastNode.right = node;
-            node.parent = this.lastNode;
-            node.loc = "right";
-            if (node.left != null) {
-                node.left.loc = "left";
-            }
-            updateHeigth(node);
-            this.root = node;
-        }
-    }
-
-    buildTreap() {
-        let isFirst = true;
-        let newOurHeap = null;
-        this.listOfNode = this.listOfNode.sort(function (a, b) {
-            if (a != b) {
-                return a[0] - b[0];
-            } else {
-                return a[1] - b[1];
-            }
-        });
-        for (let i = 0; i < this.listOfNode.length; i++) {
-            const [key, priority] = this.listOfNode[i];
-            const node = new Node(key, priority);
-            this.insertNode(node);
-            this.lastNode = node;
-        }
-    }
-
-    drawTreap() {
-        this.root = update(this.root);
-        drawAllTreap(this.root, 0);
-    }
-}
-

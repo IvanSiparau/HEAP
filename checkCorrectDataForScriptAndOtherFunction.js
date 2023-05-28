@@ -94,8 +94,6 @@ function getListsOfNodes(str) {
         const int1 = parseInt(match[1]);
         const int2 = parseInt(match[2]);
         const vertex = [int1, int2];
-
-        // Проверка на уникальность вершины
         if (vertices.has(vertex.toString())) {
             console.error('Вершины должны быть различными.');
             return null;
@@ -127,4 +125,49 @@ function checkCorrectDataForNode(str, root) {
         return [false, 'все вершины должны быть уникальные'];
     }
     return [true];
+}
+
+function checkCorrectDataForMerge(listOfNewNode, listOfOldNode) {
+    if (listOfNewNode === '') {
+        return [false, 'введите вершины']
+    } if (listOfOldNode.length === 0){
+        return [false, 'постройте сначало дерево']
+    }
+    const regex = /^\(\d+, \d+\)( \(\d+, \d+\))*$/;
+    if (!regex.test(listOfNewNode)) {
+        return [false, 'некорекный ввоод'];
+    }
+    const pairs = listOfNewNode.match(/\d+, \d+/g);
+    const uniquePairs = new Set(pairs);
+    if (pairs.length !== uniquePairs.size) {
+        return [false, 'все вершины должны быть уникальные'];
+    }
+    listOfNewNode = getListsOfNodes(listOfNewNode);
+    listOfNewNode =listOfNewNode.sort(function (a, b) {
+        return a[1] - b[1];
+    });
+    listOfOldNode = listOfOldNode.sort(function (a, b) {
+        return a[1] - b[1];
+    });
+    if (listOfNewNode[0][1] >= listOfOldNode[listOfOldNode.length -1 ][1]) {
+        listOfNewNode = listOfNewNode.sort(function (a, b) {
+            if (a !== b) {
+                return a[0] - b[0];
+            } else {
+                return a[1] - b[1];
+            }
+        });
+        return [true, listOfNewNode, 'new'];
+    }
+    if (listOfNewNode[listOfNewNode.length - 1][1] <= listOfOldNode[0][1]) {
+        listOfNewNode = listOfNewNode.sort(function (a, b) {
+            if (a !== b) {
+                return a[0] - b[0];
+            } else {
+                return a[1] - b[1];
+            }
+        });
+        return [true, listOfNewNode, 'old'];
+    }
+    return [false, 'приорететы одного дерево больше, чем приоритеты второго'];
 }

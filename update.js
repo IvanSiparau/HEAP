@@ -32,6 +32,9 @@ function updateCoordinateY(node) {
 }
 
 function getRoot(node) {
+    if (node === null) {
+        return null;
+    }
     while (node.loc !== 'root') {
         node = node.parent;
     }
