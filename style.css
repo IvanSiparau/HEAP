@@ -21,12 +21,8 @@ body {
 }*/
 
 .ourHeap {
-    height: 600px;
-    float: right;
-}
-
-#code {
-    float: left;
+    height: 450px;
+    /*float: right;*/
 }
 
 .inputAndButtonForBuildTreap {
@@ -82,18 +78,25 @@ table {
     width: 180px;
 }
 
-#code {
-    width: 410px;
-    height: 400px;
-    display: block;
-}
-
 code {
     white-space: pre;
     display: block;
 }
+.code {
+    display: block;
+}
 
-.workingPart {
-    display: flex;
-    /*overflow: auto;*/
+#closeCode {
+    float: right;
+    background: #960000;
+    width: 50px;
+    height: 250px;
+}
+
+#code {
+    background: #e7adad;
+    float: right;
+    width: 410px;
+    height: 250px;
+    display: block;
 }

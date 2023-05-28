@@ -3,6 +3,7 @@ function deleteCode() {
 }
 
 function createCode(code_) {
+    document.getElementById('code').style.display = 'block'
     let codeOfBuild = document.getElementById('code');
     for (var i = 0; i < code_.length; ++i) {
         let code = document.createElement('code');
@@ -66,4 +67,28 @@ const codeForMerge = [
 ]
 function codeOfMergeTreap()  {
     createCode(codeForMerge);
+}
+
+const codeForInsert = [
+    'function insert(treap, node)',                     //code1
+    '   if (!treap) return node',                       //code2
+    '   (treap1, treap2) = split(treap, node.key)',     //code3
+    '   treap3 = merge(treap, node)',                   //code4
+    '   treap = merge(treap3, treap2)',                 //code5
+    '   return treap'                                   //code6
+];
+
+function codeOfInsertTreap() {
+    createCode(codeForInsert);
+}
+
+const codeForRemove = [
+    'function remove(treap, key):',
+    '   (treap1, treap2) = split(treap, key)',
+    '   (trea3, treap4) = split(treap2, key + 1)',
+    '   return merge(treap1, treap4)'
+];
+
+function codeOfRemove() {
+    createCode(codeForRemove);
 }

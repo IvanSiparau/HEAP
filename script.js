@@ -12,7 +12,7 @@ let split = new TreapForSplit();
 
 svg = d3.select(".ourHeap").append("svg")
     .attr("width", width)
-    .attr("height", 600);
+    .attr("height", 450);
 
 buttonForBuildTreap.onclick = function () {
     let ListOfNode = dataForBuildTreap.value;
@@ -98,7 +98,7 @@ buttonForMerge.onclick = function () {
     if (Information[0]) {
         disable();
         deleteCode();
-        makeErrorMessageInvisible();
+        makeErrorMessageInvisible('merge');
         codeOfMergeTreap();
         let copyTime = time;
         time = 0;
@@ -136,10 +136,10 @@ buttonForMerge.onclick = function () {
 }
 
 buttonForMergeOurTreapAfterSplit.onclick = function () {
-    time = 500;
     count = 0;
     deleteCode();
     MakeTheButtonsAfterTheSplitInvisible();
+    codeOfMergeTreap();
     let merge = new TreapsForMerge();
     merge.setFirstTreap(split.getFirstTreap());
     merge.setSecondTreap(split.getSecondTreap());
@@ -199,15 +199,14 @@ let buttonForInsert = document.querySelector('.buttonForInsertNewNode');
 buttonForInsert.onclick = function () {
     makeErrorMessageInvisible('insert');
     let node = DataOfNewAddedNode.value;
-    if (checkCorrectDataForInsert(node)) {
+    let Information = checkCorrectDataForInsert(node, Treap.getListOfNodes());
+    if (Information[0]) {
         disable();
         deleteCode();
+        codeOfInsertTreap();
         count = 0;
-        time = 500;
         let Insert = new AddedNodeToOurTreap();
-        node = node.split(' ');
-        node[0] = Number(node[0]);
-        node[1] = Number(node[1]);
+        node = Information[1];
         DataOfNewAddedNode.value = '';
         Insert.setNodeForAdd(node);
         Insert.setRoot(Treap.getRoot());
@@ -217,7 +216,7 @@ buttonForInsert.onclick = function () {
         enable();
     } else {
         let errorMessage = document.querySelector('#insert');
-        errorMessage.textContent = sendMessageErrorForInsert(node);
+        errorMessage.textContent = Information[1];
         errorMessage.style.display = 'block';
     }
 }
@@ -225,13 +224,14 @@ buttonForInsert.onclick = function () {
 let DataOfRemoveNode = document.querySelector('.removeNode');
 let buttonForRemove = document.querySelector('.buttonForRemoveNode');
 buttonForRemove.onclick = function () {
+
     makeErrorMessageInvisible('remove');
     let key = DataOfRemoveNode.value;
     if (Treap.getRoot() != null && !isNaN(Number(key)) && key !== '') {
         disable()
         deleteCode();
+        codeOfRemove();
         count = 0;
-        time = 500;
         let Remove = new RemoveNodeOfTreap();
         Remove.setRoot(Treap.getRoot());
         key = Number(key);
@@ -270,6 +270,25 @@ BuildRandomTreap.onclick = function () {
     time = copyTime;
 }
 
+const close = document.getElementById("closeCode");
+
+close.addEventListener('click', function () {
+    const displayStyle = document.getElementById('code').style.display;
+    if (displayStyle === 'none') {
+        document.getElementById('code').style.display = 'block'
+    } else {
+        document.getElementById('code').style.display = 'none'
+    }
+})
+
+
+time_ = document.querySelector('.slider');
+
+time_.addEventListener("click", function() {
+    time = -time_.value;
+    time.value = -time;
+    console.log(time_.value)
+});
 
 
 

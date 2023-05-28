@@ -1,6 +1,6 @@
 const buttonOrInputInDisplay = ['.buttonForBuildTreap', '.deleteAll', '.buildTreap',
     '.buttonForSplitOurTreap', '.MergeOurTreaps', '.buttonForMerge', '.buttonForInsertNewNode',
-    '.removeNode', '.splitOurTreap', '.insertNewNode', '.randomTreap', '.buttonForRemoveNode'] //8
+    '.removeNode', '.splitOurTreap', '.insertNewNode', '.randomTreap', '.buttonForRemoveNode', '.slider'] //8
 
 const eventAfterSplit = ['.deleteFirstTreapAfterSplit', '.deleteSecondTreapAfterSplit', '.MergeOurTreapsAftterSplit',
     '.deleteAll'];
@@ -58,17 +58,27 @@ function makeErrorMessageInvisible(id) {
     errorMessage.style.display = 'none';
 }
 
-function checkCorrectDataForInsert(data) {
-    if (data === '') {
-        return false;
+function checkCorrectDataForInsert(data, listOfNode) {
+    if (data == '') {
+        return [false, 'введите числа'];
     }
-    if ((data.split(' ')).length !== 2) {
-        return false;
+    data = data.split(' ');
+    if (data.length != 2) {
+        return [false, 'введите два числа'];
     }
-    if (isNaN(Number(data.split(' ')[0])) || isNaN(Number(data.split(' ')[1]))) {
-        return false;
+    if (isNaN(Number(data[0])) || isNaN(Number(data[0]))) {
+        return [false, 'некорректный ввод'];
     }
-    return true;
+    data = [Number(data[0]), Number(data[1])];
+    if (listOfNode.length === 0) {
+        return [true, data];
+    }
+    for (var i = 0; i < listOfNode.length; ++i) {
+        if (data[0] === listOfNode[i][0] && data[1] === listOfNode[i][1]) {
+            return [false, 'все вершины должны быть различны'];
+        }
+    }
+    return [true, data]
 }
 
 function sendMessageErrorForInsert(node) {
@@ -147,19 +157,16 @@ function checkCorrectDataForMerge(listOfNewNode, listOfOldNode) {
         return a[1] - b[1];
     });
     listOfOldNode = listOfOldNode.sort(function (a, b) {
-        return a[1] - b[1];
+        if (a !== b) {
+            return a[0] - b[0];
+        } else {
+            return a[1] - b[1];
+        }
     });
-    if (listOfNewNode[0][1] >= listOfOldNode[listOfOldNode.length -1 ][1]) {
-        listOfNewNode = listOfNewNode.sort(function (a, b) {
-            if (a !== b) {
-                return a[0] - b[0];
-            } else {
-                return a[1] - b[1];
-            }
-        });
+    if (listOfNewNode[0][0] > listOfOldNode[listOfOldNode.length -1 ][0]) {
         return [true, listOfNewNode, 'new'];
     }
-    if (listOfNewNode[listOfNewNode.length - 1][1] <= listOfOldNode[0][1]) {
+    if (listOfNewNode[listOfNewNode.length - 1][0] < listOfOldNode[0][0]) {
         listOfNewNode = listOfNewNode.sort(function (a, b) {
             if (a !== b) {
                 return a[0] - b[0];
@@ -169,5 +176,5 @@ function checkCorrectDataForMerge(listOfNewNode, listOfOldNode) {
         });
         return [true, listOfNewNode, 'old'];
     }
-    return [false, 'приорететы одного дерево больше, чем приоритеты второго'];
+    return [false, 'ключи одного дерево больше, чем приоритеты второго'];
 }

@@ -407,7 +407,7 @@ function changeColorOfSelector(lastSelector, newSelector) {
         d3.select('.' + lastSelector)
             .transition()
             .duration(0)
-            .style('background-color', 'white')
+            .style('background-color', '#e7adad')
             .delay(time * count);
     }
     d3.select('.' + newSelector)

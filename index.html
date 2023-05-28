@@ -44,7 +44,7 @@
             <button class="deleteAll">очистить</button>
         </td>
         <td class="rangeForTime">
-            <input type="range" min="0" max="10000" step="1000">
+            <input type="range" class='slider' min="-3000" max="0" step="250" value="-1000">
         </td>
     </table>
     <button class="deleteFirstTreapAfterSplit" style="display: none">удалить 1</button>
@@ -52,8 +52,10 @@
     <button class="MergeOurTreapsAftterSplit" style="display: none">merge</button>
 </div>
 <div class="workingPart">
-    <div id="code" style="display: block"></div>
     <div class="ourHeap"></div>
+    <div id="closeCode"></div>
+    <div id="code" style="display: none"></div>
+
 </div>
 <script src="magic.js"></script>
 <script src="code.js"></script>

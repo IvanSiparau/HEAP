@@ -275,9 +275,76 @@ class TreapsForMerge extends BasicClassForNode {
         }
     }
 
+    merge(leftTree, rightTree) {
+        changeColorOfSelector(this.lastSetion, 'code1')
+        this.lastSetion = 'code1'
+        if (leftTree === null) {
+            changeColorOfSelector(this.lastSetion, 'code2')
+            count++;
+            drawPassesForMerge(leftTree, rightTree);
+            changeColorOfSelector('code2', 'code3');
+            count++;
+            this.lastSetion = 'code3';
+            return rightTree;
+        }
+        if (rightTree === null) {
+            changeColorOfSelector(this.lastSetion, 'code4')
+            count++;
+            drawPassesForMerge(leftTree, rightTree);
+            changeColorOfSelector('code4', 'code5');
+            count++;
+            this.lastSetion = 'code5';
+            return leftTree;
+        }
+
+        if (leftTree.priority <= rightTree.priority) {
+            changeColorOfSelector(this.lastSetion, 'code6');
+            count++;
+            drawPassesForMerge(leftTree, rightTree);
+            changeColorOfSelector('code6', 'code7');
+            count++;
+            this.lastSetion = 'code7';
+            let oldConection = leftTree.right
+            leftTree.right = this.merge(leftTree.right, rightTree);
+            changeLineBetweenTwoNodeForMerge(leftTree, oldConection, leftTree.right)
+            if (leftTree.right != null) {
+                leftTree.right.loc = 'right';
+                leftTree.right.parent = leftTree;
+            }
+            let newRoots = updateForMerge(leftTree);
+            changeColorOfSelector(this.lastSetion, 'code8');
+            count++;
+            drawAnimationTreapInNewNode(newRoots);
+            count++;
+            this.lastSetion = 'code8';
+            return leftTree;
+        } else {
+            changeColorOfSelector(this.lastSetion, 'code9');
+            count++;
+            drawPassesForMerge(leftTree, rightTree);
+            changeColorOfSelector('code9', 'code10');
+            count++;
+            this.lastSetion = 'code10';
+            let oldConection = rightTree.left;
+            rightTree.left = this.merge(leftTree, rightTree.left);
+            changeLineBetweenTwoNodeForMerge(rightTree, oldConection, rightTree.left)
+            if (rightTree.left != null) {
+                rightTree.left.loc = 'left';
+                rightTree.left.parent = rightTree;
+
+            }
+            let newRoots = updateForMerge(rightTree);
+            changeColorOfSelector(this.lastSetion, 'code11');
+            this.lastSetion = 'code11';
+            drawAnimationTreapInNewNode(newRoots);
+            count++;
+            return rightTree;
+        }
+    }
+
     mergeOurTreaps() {
         this.drawTreapsForMerge();
-        this.root = merge(this.firstTreap, this.secondTreap);
+        this.root = this.merge(this.firstTreap, this.secondTreap);
         this.root.x = width / 2;
         this.root.y = 50;
         this.root = updateForMerge(this.root);
@@ -339,7 +406,7 @@ function IsNodeEque(firstNode, secondNode) {
     return false;
 }
 
-class AddedNodeToOurTreap {
+class AddedNodeToOurTreap  {
     constructor() {
         this.root = null;
         this.addedNode = null;
@@ -359,7 +426,6 @@ class AddedNodeToOurTreap {
 
     insertNewNodeForTreap() {
         if (this.root == null) {
-            this.root = this.addedNode;
             let newNode = new Node(this.addedNode[0], this.addedNode[1]);
             newNode.loc = 'root';
             newNode.parent = null;
@@ -370,10 +436,11 @@ class AddedNodeToOurTreap {
             return;
         } else {
             let SplitTreap = new TreapForSplit();
-            SplitTreap.setRoot(this.root);
+            changeColorOfSelector(this.lastSetion, )
+            /*SplitTreap.setRoot(this.root);
             SplitTreap.drawOurTreapForSlip();
             SplitTreap.setNode(this.addedNode[0]);
-            SplitTreap.splitOurTreap();
+            SplitTreap.splitOurTreap();*/
             if (SplitTreap.getSecondTreap() == null) {
                 let root = SplitTreap.getFirstTreap();
                 root.x = width / 4;
