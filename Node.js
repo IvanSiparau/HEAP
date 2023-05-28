@@ -422,7 +422,7 @@ class AddedNodeToOurTreap  extends BasicClassForNode {
             changeColorOfSelector(this.lastSetion, )
             SplitTreap.setRoot(this.root);
             SplitTreap.drawOurTreapForSlip();
-            SplitTreap.setNode(this.addedNode[0]);
+            SplitTreap.setNode(this.node[0]);
             SplitTreap.splitOurTreap();
             if (SplitTreap.getSecondTreap() == null) {
                 let root = SplitTreap.getFirstTreap();
@@ -431,7 +431,7 @@ class AddedNodeToOurTreap  extends BasicClassForNode {
                 root = updateForMerge(root);
                 drawAnimationTreapInNewNode(root);
                 count++;
-                let newAddedNode = new Node(this.addedNode[0], this.addedNode[1]);
+                let newAddedNode = new Node(this.node[0], this.node[1]);
                 newAddedNode.x = width / 2;
                 newAddedNode.y = 50;
                 newAddedNode.loc = 'root';

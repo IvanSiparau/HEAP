@@ -127,6 +127,8 @@ buttonForMerge.onclick = function () {
         count = 0;
         time = copyTime;
         mergeTreap.mergeOurTreaps();
+        Treap = new BuildTreap();
+        Treap.setRoot(mergeTreap.getRoot());
         enable();
     } else {
         let errorMessage = document.querySelector('#merge');
