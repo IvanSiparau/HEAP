@@ -406,24 +406,7 @@ function IsNodeEque(firstNode, secondNode) {
     return false;
 }
 
-class AddedNodeToOurTreap  {
-    constructor() {
-        this.root = null;
-        this.addedNode = null;
-    }
-
-    setRoot(root) {
-        this.root = root;
-    }
-
-    getRoot() {
-        return this.root;
-    }
-
-    setNodeForAdd(node) {
-        this.addedNode = node;
-    }
-
+class AddedNodeToOurTreap  extends BasicClassForNode {
     insertNewNodeForTreap() {
         if (this.root == null) {
             let newNode = new Node(this.addedNode[0], this.addedNode[1]);
@@ -437,10 +420,10 @@ class AddedNodeToOurTreap  {
         } else {
             let SplitTreap = new TreapForSplit();
             changeColorOfSelector(this.lastSetion, )
-            /*SplitTreap.setRoot(this.root);
+            SplitTreap.setRoot(this.root);
             SplitTreap.drawOurTreapForSlip();
             SplitTreap.setNode(this.addedNode[0]);
-            SplitTreap.splitOurTreap();*/
+            SplitTreap.splitOurTreap();
             if (SplitTreap.getSecondTreap() == null) {
                 let root = SplitTreap.getFirstTreap();
                 root.x = width / 4;

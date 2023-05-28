@@ -208,7 +208,7 @@ buttonForInsert.onclick = function () {
         let Insert = new AddedNodeToOurTreap();
         node = Information[1];
         DataOfNewAddedNode.value = '';
-        Insert.setNodeForAdd(node);
+        Insert.setNode(node);
         Insert.setRoot(Treap.getRoot());
         Insert.insertNewNodeForTreap();
         Treap = new BuildTreap();
