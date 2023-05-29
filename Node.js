@@ -150,6 +150,7 @@ class BuildTreap extends BasicClassForNode {
             drawPass(node);
             this.lastNode = node;
         }
+        changeColorOfSelector(this.lastSetion, 0);
         delatePassAndMessage();
     }
 }
@@ -253,6 +254,7 @@ class TreapForSplit extends BasicClassForNode {
         count++;
         drawKeyAndPriority(this.secondTreap);
         drawKeyAndPriority(this.firstTreap);
+        changeColorOfSelector(this.lastSetion, 0)
     }
 
 }
@@ -352,6 +354,7 @@ class TreapsForMerge extends BasicClassForNode {
         count++
         drawKeyAndPriority(this.root);
         count++;
+        changeColorOfSelector(this.lastSetion, 0);
         this.secondTreap = null;
         this.firstTreap = null;
     }
@@ -531,51 +534,88 @@ class AddedNodeToOurTreap  extends BasicClassForNode {
 
 class RemoveNodeOfTreap extends BasicClassForNode {
     RemoveTheNode() {
-        let SplitTreap = new TreapForSplit();
-        SplitTreap.setRoot(this.root);
-        SplitTreap.drawOurTreapForSlip();
-        SplitTreap.setNode(this.node);
-        SplitTreap.splitOurTreap();
-        if (SplitTreap.getFirstTreap() == null) {
-            drawOnlyKey(SplitTreap.getSecondTreap())
-            count++;
-            let [left, right] = Split(SplitTreap.getSecondTreap(), this.node + 1);
-            deleteFullOurTreap(left);
-            if (right != null) {
-                right.loc = 'root';
-                right.parent = null;
-                right.x = width / 2;
-                right.y = 50;
-                right = updateForMerge(right);
-                drawAnimationTreapInNewNode(right);
-                count++;
-                drawKeyAndPriority(right);
-                count++;
-                this.root = right;
-            }
-            return;
-        } else if (SplitTreap.getSecondTreap() == null) {
-            this.root = SplitTreap.getFirstTreap();
-            return;
-        }
-        drawOnlyKey(SplitTreap.getSecondTreap());
-        count++;
-        let [left, right] = Split(SplitTreap.getSecondTreap(), this.node + 1);
-        deleteFullOurTreap(left);
-        if (right != null) {
+        changeColorOfSelector(this.lastSetion, 'code1');
+        drawOnlyKey(this.root);
+        changeColorOfSelector('code1', 'code2')
+        let [left, right] = Split(this.root, this.node);
+        if (left == null) {
             right.loc = 'root';
-            right.parent = null;
-            right.x = 3 * width / 4;
+            right.x = width / 2;
             right.y = 50;
             right = updateForMerge(right);
             drawAnimationTreapInNewNode(right);
             count++;
-            let Merge = new TreapsForMerge();
-            Merge.setFirstTreap(SplitTreap.getFirstTreap());
-            Merge.setSecondTreap(right);
-            Merge.mergeOurTreaps();
-            this.root = Merge.getRoot();
+            changeColorOfSelector('code2', 'code3');
+            let [left_, right_] = Split(right, this.node + 1);
+            deleteFullOurTreap(left_);
+            if (right_ != null ) {
+                right_.loc = 'root';
+                right_.parent = null;
+                right_.x = width / 2;
+                right_.y = 50;
+                right_ = updateForMerge(right_);
+                drawAnimationTreapInNewNode(right_);
+                count++;
+                drawKeyAndPriority(right_);
+                count++;
+            }
+            changeColorOfSelector('code3', 'code4');
+            this.root = right_;
+            changeColorOfSelector('code4', 0);
+            return;
         }
+        if (right == null) {
+            changeColorOfSelector('code2', 'code3');
+            drawKeyAndPriority(left);
+            changeColorOfSelector('code3', 'code4');
+            this.root = left;
+            changeColorOfSelector('code4', 0);
+            return;
+        }
+        right.loc = 'root';
+        right.parent = null;
+        right.x = 3 * width / 4;
+        right.y = 50;
+        left.loc = 'root';
+        left.parent = null;
+        left.x = width / 4;
+        left.y = 50;
+        left = updateForMerge(left);
+        right = updateForMerge(right);
+        drawAnimationTreapInNewNode(left);
+        drawAnimationTreapInNewNode(right);
+        count++;
+        changeColorOfSelector('code2', 'code3')
+        let [left_, right_] = Split(right, this.node + 1);
+        deleteFullOurTreap(left_);
+        if (right_ != null) {
+            right_.loc = 'root';
+            right_.parent = null;
+            right_.x = 3 * width / 4;
+            right_.y = 50;
+            right_ = updateForMerge(right_);
+            drawAnimationTreapInNewNode(right_);
+            count++;
+            drawOnlyPriority(right_);
+            drawOnlyPriority(left);
+            let root = merge(left, right_);
+            root.x = width / 2;
+            root.y = 50;
+            root = updateForMerge(root);
+            drawAnimationTreapInNewNode(root);
+            count++;
+            drawKeyAndPriority(root);
+            this.root = root;
+            changeColorOfSelector('code3', 'code4');
+            changeColorOfSelector('code4', 0);
+            return;
+        }
+        drawKeyAndPriority(left);
+        count++;
+        changeColorOfSelector('code3', 'code4');
+        changeColorOfSelector('code4', 0);
+        this.root = left;
+        return;
     }
 }
 
