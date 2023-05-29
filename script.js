@@ -189,6 +189,7 @@ buttonForDeleteTheSecondTreapAfterSplit.onclick = function () {
 buttonForDeleteAll.onclick = function () {
     count = 0;
     deleteCode();
+    document.getElementById('code').style.display = 'none'
     svg.selectAll("*").remove();
     Treap = new BuildTreap();
     MakeTheButtonsAfterTheSplitInvisible();
@@ -263,6 +264,7 @@ BuildRandomTreap.onclick = function () {
     count = 0;
     svg.selectAll("*").remove();
     deleteCode();
+    document.getElementById('code').style.display = 'none'
     let copyTime = time;
     time = 0;
     let listOfNodes = new RandomTupleGenerator(0, 99, 9).generateRandomTuples();
