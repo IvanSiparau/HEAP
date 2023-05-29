@@ -103,6 +103,7 @@ buttonForMerge.onclick = function () {
         let copyTime = time;
         time = 0;
         let newTreap = new BuildTreap();
+        newTrepsForMerge.value = '';
         newTreap.setListOfNode(Information[1]);
         newTreap.buildTreap();
         let left, right;
