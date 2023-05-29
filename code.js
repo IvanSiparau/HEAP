@@ -83,10 +83,10 @@ function codeOfInsertTreap() {
 }
 
 const codeForRemove = [
-    'function remove(treap, key):',
-    '   (treap1, treap2) = split(treap, key)',
-    '   (trea3, treap4) = split(treap2, key + 1)',
-    '   return merge(treap1, treap4)'
+    'function remove(treap, key):',                     //code1
+    '   (treap1, treap2) = split(treap, key)',          //code2
+    '   (trea3, treap4) = split(treap2, key + 1)',      //code3
+    '   return merge(treap1, treap4)'                   //code4
 ];
 
 function codeOfRemove() {

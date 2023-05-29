@@ -410,11 +410,13 @@ function changeColorOfSelector(lastSelector, newSelector) {
             .style('background-color', '#e7adad')
             .delay(time * count);
     }
-    d3.select('.' + newSelector)
-        .transition()
-        .duration(0)
-        .style('background-color', 'yellow')
-        .delay(time * count);
+    if (newSelector !== 0) {
+        d3.select('.' + newSelector)
+            .transition()
+            .duration(0)
+            .style('background-color', 'yellow')
+            .delay(time * count);
+    }
     count++;
 }
 
